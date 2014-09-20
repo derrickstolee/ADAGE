@@ -22,34 +22,21 @@ OBJECTS = Configuration.o 						\
 				LinearConstraint.o 		\
 				RuleShape.o 						\
 				SquareGrid.o   	\
-				TriangularGrid.o
+				TriangularGrid.o \
+				fraction.o \
+				Trie.o \
+				SearchManager.o 
 
 CC 	= gcc
 CXX = g++
 
 OPT = -O3 
 DEBUG =  
-# -stdlib=libstdc++
 WARNINGS = -Wall
 
-CFLAGS 		= $(OPT) $(DEBUG) $(WARNINGS) $(CPLEX_INCLUDE) $(DEFINES)
-CXXFLAGS 	= $(OPT) $(DEBUG) $(WARNINGS) $(CPLEX_INCLUDE) $(DEFINES) 
-LFLAGS 		= $(OPT) $(DEBUG) $(WARNINGS) $(CPLEX_FLAGS) $(DEFINES) 
-
-TREESEARCHDIR = ../../TreeSearch
-UTILSDIR = ../../Utilities/src
-
-INCLUDES = -I.   \
-			-I$(TREESEARCHDIR) 	\
-			-I$(UTILSDIR)		\
-
-TREESEARCHOBJS	= $(TREESEARCHDIR)/SearchManager.o
-
-UTILSOBJS = $(UTILSDIR)/fraction.o  \
-	$(UTILSDIR)/Trie.o
-				  
-LIBOBJS			= $(TREESEARCHOBJS) $(UTILSOBJS)
-			
+CFLAGS 		= $(OPT) $(DEBUG) $(WARNINGS) $(DEFINES)
+CXXFLAGS 	= $(OPT) $(DEBUG) $(WARNINGS) $(DEFINES) 
+LFLAGS 		= $(OPT) $(DEBUG) $(WARNINGS) $(DEFINES) 
 			
 .SUFFIXES: .c .cpp .o .obj .exe 
 
