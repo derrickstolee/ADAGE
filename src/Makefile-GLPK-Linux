@@ -1,0 +1,95 @@
+#
+# Makefile for ADAGE project, src/ folder.
+#
+# This folder contains executables that are generic to all problems.
+#
+# This uses GLPK for the linear programming portion.
+#
+
+
+TARGETS =  adage-solver-glpk.exe
+
+
+OBJECTS =ADAGELinearProgram.o		\
+			ADAGELinearProgramGLPK.o \
+			constraintset.o	
+
+
+CC 	= g++
+CXX = g++
+
+OPT = -O0 -g
+# -O7
+DEBUG =  
+# -g 
+# -static 
+WARNINGS = -Wall 
+DEFINES = -D GLPK
+
+CFLAGS 		= $(OPT) $(DEBUG) $(WARNINGS) $(DEFINES)
+CXXFLAGS 	= $(OPT) $(DEBUG) $(WARNINGS) $(DEFINES)
+
+LFLAGS 		= $(OPT) $(DEBUG) $(WARNINGS) $(DEFINES) -lm -Wl,-rpath -Wl,/usr/local/lib  -L/usr/local/lib -lglpk 
+
+
+TREESEARCHDIR = ../../TreeSearch
+UTILSDIR = ../../Utilities/src
+GLPKDIR = ../../glpk/src
+GRIDDIR = ../src-grids
+
+INCLUDES =  -I$(TREESEARCHDIR) 	\
+			-I$(NAUTYDIR)		\
+			-I$(GLPKDIR)		\
+			-I$(UTILSDIR)		\
+			-I$(GRIDDIR)
+
+
+TREESEARCHOBJS	= $(TREESEARCHDIR)/SearchManager.o
+ 
+#UTILSOBJS	= 	$(UTILSDIR)/Set.o				\
+				$(UTILSDIR)/translation.o				\
+				$(UTILSDIR)/TreeSet.o				 
+				  
+
+
+LIBOBJS			= $(TREESEARCHOBJS) $(CLIQUEROBJS) $(UTILSOBJS) $(NAUTYOBJS)
+			
+						
+.SUFFIXES: .c .cpp .o .obj .exe 
+
+all: $(OBJECTS) $(TESTS) $(TARGETS)
+
+
+# The default object compiler
+.c.o: $<
+	$(CC) $(CFLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
+        
+.cpp.o: $<
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
+        
+.cpp.exe: $< $(OBJECTS) 
+	$(CXX) 			\
+        	$(INCLUDES)	$(DEBUG)			\
+        	$(LIBOBJS) $(LIBS)				\
+        	`cat $@.objs`           		\
+            $< -o $@ $(LFLAGS) 
+	cp $@ ../bin/
+        
+.c.exe: $< $(COBJECTS)
+	$(CC) 	$(LFLAGS)			    \
+        	$(INCLUDES)				\
+        	$(NAUTYOBJS)  $(COBJECTS) $(LIBS)		\
+            $< -o $@
+	cp $@ ../bin/
+        
+clean:
+	rm $(OBJECTS) $(TARGETS) $(TESTS)
+	
+cleanexe:
+	rm $(TARGETS)
+
+cleantest:
+	rm $(TESTS)
+
+clexe:
+	rm $(TARGETS)

@@ -1,0 +1,79 @@
+\documentclass[11pt]{article}
+\usepackage{setspace}
+
+\usepackage{times,float, multicol}
+\usepackage[pdftex]{graphicx}
+\usepackage[rflt]{floatflt}
+\usepackage{hyperref}
+
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{9.0in}
+\setlength{\topmargin}{-.5in}
+\setlength{\oddsidemargin}{-.0600in}
+\setlength{\evensidemargin}{.0625in}
+
+\newcommand{\secref}[1]{Section~\ref{#1}}
+
+
+\def\TreeSearch{{TreeSearch}}
+
+\title{ADAGE on Grids User Guide}
+
+\author{Derrick Stolee \\ 
+	Iowa State University\\
+	\texttt{dstolee@iastate.edu}
+       }
+       
+\begin{document}
+
+\maketitle
+\vspace{-.3in}
+\begin{abstract}
+	The ADAGE framework is a method for automatically constructing discharging arguments.
+	ADAGE on Grids is the specific implementation for bounding density of sets in grids.
+	This document details the strategy of ADAGE on Grids along with implementation, compilation, and execution details.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:Introduction}
+
+
+\subsection{Acquiring \TreeSearch}
+
+The latest version of ADAGE on Grids and its documentation is publicly available on GitHub \cite{github} at the address \href{http://www.github.com/derrickstolee/ADAGE/}{http://www.github.com/derrickstolee/ADAGE/}.
+It will also be available at \url{http://www.math.iastate.edu/dstolee/r/adage.htm}.
+
+\section{Strategy}
+\label{sec:Strategy}
+
+
+
+
+
+
+
+\section{Data Structures}
+\label{sec:structures}
+	
+\noindent{\bf \texttt{writeStatistics()}:}
+
+	
+
+\section{Compilation}
+\label{sec:Compilation}
+
+To compile ADAGE on Grids, run \texttt{make} in the \texttt{src-grids} directory.
+Then, to compile the linear programming executables, run \texttt{make -f Makefile-GLPK} in the \texttt{src} directory.
+
+more?
+
+\section{Execution}
+\label{sec:Execution}
+
+list the three commands in order...
+
+
+
+
+
+\end{document}

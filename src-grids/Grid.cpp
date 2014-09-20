@@ -1,0 +1,836 @@
+/*
+ * Grid.cpp
+ *
+ *  Created on: Apr 17, 2014
+ *      Author: stolee
+ */
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <queue>
+#include "Grid.hpp"
+#include "macros.hpp"
+
+using namespace adage::grids;
+
+void Grid::lengthenVArrays(int length, int e_length)
+{
+	if ( length > this->v_len )
+	{
+		this->v_len = length;
+		this->v = (int*) realloc(this->v, length * sizeof(int));
+		this->vd = (int*) realloc(this->vd, length * sizeof(int));
+		this->vo = (int*) realloc(this->vo, length * sizeof(int));
+	}
+
+	if ( e_length > this->ve_len )
+	{
+		this->ve_len = e_length;
+		this->vve = (int*) realloc(this->vve, e_length * sizeof(int));
+		this->vfe = (int*) realloc(this->vfe, e_length * sizeof(int));
+		this->vbe = (int*) realloc(this->vbe, 2 * e_length * sizeof(int));
+	}
+}
+
+void Grid::lengthenFArrays(int length, int e_length)
+{
+	this->f_len = length;
+	this->f = (int*) realloc(this->f, length * sizeof(int));
+	this->fd = (int*) realloc(this->fd, length * sizeof(int));
+	this->fo = (int*) realloc(this->fo, length * sizeof(int));
+
+	this->fe_len = e_length;
+	this->fve = (int*) realloc(this->fve, e_length * sizeof(int));
+	this->ffe = (int*) realloc(this->ffe, e_length * sizeof(int));
+	this->fbe = (int*) realloc(this->fbe, 2 * e_length * sizeof(int));
+}
+
+Grid::Grid()
+{
+	this->max_vertex_index = 0;
+	this->max_facial_index = 0;
+	this->num_facial_orbits = 1;
+	this->num_vertex_orbits = 1;
+
+	this->f_len = 0;
+	this->f = 0;
+	this->max_f_value = 0;
+	this->fd = 0;
+	this->fe_len = 0;
+	this->fve = 0;
+	this->ffe = 0;
+	this->fbe = 0;
+	this->fo = 0;
+
+	this->max_v_value = 0;
+	this->v_len = 0;
+	this->v = 0;
+	this->vd = 0;
+	this->ve_len = 0;
+	this->vve = 0;
+	this->vfe = 0;
+	this->vbe = 0;
+	this->vo = 0;
+}
+
+Grid::~Grid()
+{
+	FREE_ARRAY(this->f);
+	FREE_ARRAY(this->fd);
+	FREE_ARRAY(this->fo);
+	FREE_ARRAY(this->ffe);
+	FREE_ARRAY(this->fve);
+	FREE_ARRAY(this->fbe);
+	FREE_ARRAY(this->v);
+	FREE_ARRAY(this->vd);
+	FREE_ARRAY(this->vo);
+	FREE_ARRAY(this->vve);
+	FREE_ARRAY(this->vfe);
+	FREE_ARRAY(this->vbe);
+}
+
+Grid* Grid::getDual()
+{
+	Grid* dual = new Grid();
+
+	dual->num_vertex_orbits = this->num_facial_orbits;
+	dual->num_facial_orbits = this->num_vertex_orbits;
+
+	// TODO: Fill in the details!
+
+	return dual;
+}
+
+int Grid::getVertexDegree(int vertex)
+{
+	if ( vertex < 0 || vertex >= this->max_vertex_index )
+	{
+		return -1;
+	}
+
+	return this->vd[vertex];
+}
+
+int Grid::getFaceDegree(int face)
+{
+	if ( face < 0 || face >= this->max_facial_index )
+	{
+		return -1;
+	}
+
+	return this->fd[face];
+}
+
+int Grid::getNumVertexOrbits()
+{
+	return this->num_vertex_orbits;
+}
+
+int Grid::getNumFacialOrbits()
+{
+	return this->num_facial_orbits;
+}
+
+int Grid::getVertexOrbitRepresentative(int orbit)
+{
+	if ( orbit < 0 || orbit >= this->num_vertex_orbits )
+	{
+		return -1;
+	}
+
+	for ( int i = 0; i < this->max_vertex_index; i++ )
+	{
+		if ( this->vo[i] == orbit )
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+int Grid::getFacialOrbitRepresentative(int orbit)
+{
+	if ( orbit < 0 || orbit >= this->num_facial_orbits )
+	{
+		return -1;
+	}
+
+	for ( int i = 0; i < this->max_facial_index; i++ )
+	{
+		if ( this->fo[i] == orbit )
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+int Grid::getOrbitOfVertex(int vertex)
+{
+	return this->vo[vertex];
+}
+
+int Grid::getOrbitOfFace(int face)
+{
+	return this->fo[face];
+}
+
+int Grid::getMaxVertexIndex()
+{
+	return this->max_vertex_index;
+}
+
+int Grid::getMaxFacialIndex()
+{
+	return this->max_facial_index;
+}
+
+/**
+ * Get the ith neighbor of v, modulo the degree of v!
+ *
+ * V : vertex
+ * F : face
+ * B : both
+ *
+ * protects against arbitrary positive rotations, and up to one negative rotation
+ */
+int Grid::neighborVV(int v, int i)
+{
+	if ( v < 0 || v >= this->max_vertex_index )
+	{
+		return -1;
+	}
+
+	return this->vve[this->v[v] + ((this->vd[v] + i) % this->vd[v])];
+}
+
+int Grid::neighborVF(int v, int i)
+{
+	if ( v < 0 || v >= this->max_vertex_index )
+	{
+		return -1;
+	}
+
+	return this->vfe[this->v[v] + ((this->vd[v] + i) % this->vd[v])];
+}
+
+int Grid::neighborVB(int v, int i)
+{
+	if ( v < 0 || v >= this->max_vertex_index )
+	{
+		return -1;
+	}
+
+	return this->vbe[2 * this->v[v] + ((2 * this->vd[v] + i) % (2 * this->vd[v]))];
+}
+
+int Grid::neighborFV(int v, int i)
+{
+	if ( v < 0 || v >= this->max_facial_index )
+	{
+		return -1;
+	}
+
+	return this->fve[this->f[v] + ((this->fd[v] + i) % this->fd[v])];
+}
+
+int Grid::neighborFF(int v, int i)
+{
+	if ( v < 0 || v >= this->max_facial_index )
+	{
+		return -1;
+	}
+
+	return this->ffe[this->f[v] + ((this->fd[v] + i) % this->fd[v])];
+}
+
+int Grid::neighborFB(int v, int i)
+{
+	if ( v < 0 || v >= this->max_facial_index )
+	{
+		return -1;
+	}
+
+	return this->fbe[2 * this->f[v] + ((i + 2 * this->fd[v]) % (2 * this->fd[v]))];
+}
+
+/**
+ * TODO: Implement the transform?? methods.
+ *
+ *
+ * The transform?? methods fill two permutations for how to transform vertices and faces
+ * according to the given "rooted" objects.
+ */
+void Grid::transformVV(int*& fperm, int*& vperm, int from_v1, int from_v2, int to_v1, int to_v2, bool flip)
+{
+	if ( from_v1 < 0 || from_v2 < 0 || to_v1 < 0 || to_v2 < 0 || from_v1 >= this->max_vertex_index || from_v2 >= this->max_vertex_index
+			|| to_v1 >= this->max_vertex_index || to_v2 >= this->max_vertex_index )
+	{
+		printf("--[transformVV(*,*,%d,%d,%d,%d,*)] Something out of bounds!\n", from_v1, from_v2, to_v1, to_v2);
+		return;
+	}
+
+	if ( this->vo[from_v1] != this->vo[to_v1] || this->vo[from_v2] != this->vo[to_v2] )
+	{
+		printf("--[transformVV(*,*,%d,%d,%d,%d,*)] Orbits do not match!\n", from_v1, from_v2, to_v1, to_v2);
+		return;
+	}
+
+	fperm = (int*) realloc(fperm, this->max_facial_index * sizeof(int));
+	vperm = (int*) realloc(vperm, this->max_vertex_index * sizeof(int));
+
+	// Clear out the permutations!
+	for ( int i = 0; i < this->max_vertex_index; i++ )
+	{
+		vperm[i] = -1;
+	}
+
+	for ( int j = 0; j < this->max_facial_index; j++ )
+	{
+		fperm[j] = -1;
+	}
+
+	// Now, create a "predecessor" array, so we know which things are FIXED
+	int* pred = (int*) malloc((this->max_vertex_index + this->max_facial_index) * sizeof(int));
+
+	// Perform BFS from the two starting vertices, growing out until everything is found!
+	pred[from_v1] = from_v2;
+	pred[from_v2] = from_v1;
+
+	vperm[from_v1] = to_v1;
+	vperm[from_v2] = to_v2;
+
+
+
+	std::queue<int> q;
+	q.push(from_v1);
+	q.push(from_v2);
+
+	int sign = 1;
+	if ( flip )
+	{
+		// change directions!
+		sign = -1;
+	}
+
+	while ( q.size() > 0 )
+	{
+		 // printf("Fperm: ");
+	  //   for ( int i = 0; i < 20; i++ )
+	  //   {
+	  //       printf("%d -> %d, ", i, fperm[i]);
+	  //   }
+	  //   printf("\n");
+	  //   printf("Vperm: ");
+	  //   for ( int i = 0; i < 20; i++ )
+	  //   {
+	  //       printf("%d -> %d, ", i, vperm[i]);
+	  //   }
+	  //   printf("\n");
+
+		int v = q.front();
+		q.pop();
+
+		if ( v < 0 )
+		{
+			continue;
+		}
+
+		if ( v < this->max_vertex_index )
+		{
+			// This is a VERTEX
+			int u = vperm[v];
+
+			int voffset = 0;
+			int uoffset = 0;
+
+			int p = pred[v];
+			int pv = p;
+			int pf = -1;
+			int pu = 0;
+			int pg = 0;
+
+			if ( p >= this->max_vertex_index )
+			{
+				pf = p - this->max_vertex_index;
+				pg = fperm[pf];
+
+				// find pf in the neighborhood of f
+				for ( int i = 0; i < this->getVertexDegree(v); i++ )
+				{
+					if ( this->neighborVB(v, 2 * i) == pf )
+					{
+						voffset = 2 * i;
+						break;
+					}
+				}
+
+				// find pg in the neighborhood of u
+				for ( int i = 0; i < this->getVertexDegree(u); i++ )
+				{
+					if ( this->neighborVB(u, 2 * i) == pg )
+					{
+						uoffset = 2 * i;
+						break;
+					}
+				}
+
+				// Now, if we switch directions, no need to change
+				// this offset from what we have!
+			}
+			else
+			{
+				pu = vperm[pv];
+
+				// find pv in the neighborhood of f
+				for ( int i = 0; i < this->getVertexDegree(v); i++ )
+				{
+					if ( this->neighborVB(v, 2 * i + 1) == pv )
+					{
+						voffset = 2 * i + 1;
+						break;
+					}
+				}
+				// find pu in the neighborhood of g
+				for ( int i = 0; i < this->getVertexDegree(u); i++ )
+				{
+					if ( this->neighborVB(u, 2 * i + 1) == pu )
+					{
+						uoffset = 2 * i + 1;
+						break;
+					}
+				}
+
+				// Now, if we switch directions, no need to change
+				// this offset from what we have!
+			}
+
+			// Loop through all facial and vertex neighbors.
+			// Update their permutations if they are not there yet!
+			for ( int i = 0; i < 2 * this->getVertexDegree(v); i++ )
+			{
+				int x = this->neighborVB(v, voffset + i);
+				int y = this->neighborVB(u, uoffset + sign * i);
+
+				if ( x < 0 || y < 0 )
+				{
+					continue;
+				}
+
+				if ( ((voffset + i) % 2) == 1 )
+				{
+					// is a vertex!
+					if ( x >= 0 && vperm[x] != y )
+					{
+						vperm[x] = y;
+						pred[x] = v;
+						q.push(x);
+					}
+				}
+				else
+				{
+					// is a face!
+					if ( x >= 0 && fperm[x] != y )
+					{
+						fperm[x] = y;
+						pred[x + this->max_vertex_index] = v;
+						q.push(x + this->max_vertex_index);
+					}
+				}
+			}
+		}
+		else
+		{
+			// This is a FACE
+			int foffset = 0;
+//			int voffset = 0;
+			int goffset = 0;
+//			int uoffset = 0;
+
+			int f = v - this->max_vertex_index;
+			int g = fperm[f];
+
+			int p = pred[v];
+			int pv = p;
+			int pf = -1;
+			int pu = 0;
+			int pg = 0;
+
+			if ( p >= this->max_vertex_index )
+			{
+				pf = p - this->max_vertex_index;
+				pg = fperm[pf];
+
+				// find pf in the neighborhood of f
+				for ( int i = 0; i < this->getFaceDegree(f); i++ )
+				{
+					if ( this->neighborFB(f, 2 * i + 1) == pf )
+					{
+						foffset = 2 * i + 1;
+						break;
+					}
+				}
+				// find pg in the neighborhood of g
+				for ( int i = 0; i < this->getFaceDegree(g); i++ )
+				{
+					if ( this->neighborFB(g, 2 * i + 1) == pg )
+					{
+						goffset = 2 * i + 1;
+						break;
+					}
+				}
+
+				// Now, if we switch directions, no need to change
+				// this offset from what we have!
+			}
+			else
+			{
+				pu = vperm[pv];
+
+				// find pv in the neighborhood of f
+				for ( int i = 0; i < this->getFaceDegree(f); i++ )
+				{
+					if ( this->neighborFB(f, 2 * i) == pv )
+					{
+						foffset = 2 * i;
+						break;
+					}
+				}
+				// find pu in the neighborhood of g
+				for ( int i = 0; i < this->getFaceDegree(g); i++ )
+				{
+					if ( this->neighborFB(g, 2 * i) == pu )
+					{
+						goffset = 2 * i;
+						break;
+					}
+				}
+
+				// Now, if we switch directions, no need to change
+				// this offset from what we have!
+			}
+
+			// Loop through all facial and vertex neighbors.
+			// Update their permutations if they are not there yet!
+			for ( int i = 0; i < 2 * this->getFaceDegree(f); i++ )
+			{
+				int x = this->neighborFB(f, foffset + i);
+				int y = this->neighborFB(g, goffset + sign * i);
+
+				
+				if ( x < 0 || y < 0 )
+				{
+					continue;
+				}
+
+				if ( ((foffset + i) % 2) == 0 )
+				{
+					// is a vertex!
+					if ( x >= 0 && vperm[x] != y )
+					{
+						vperm[x] = y;
+						pred[x] = f + this->max_vertex_index;
+						q.push(x);
+					}
+				}
+				else
+				{
+					// is a face!
+					if ( x >= 0 && fperm[x] != y )
+					{
+						fperm[x] = y;
+						pred[x + this->max_vertex_index] = f + this->max_vertex_index;
+						q.push(x + this->max_vertex_index);
+					}
+				}
+			}
+		}
+	}
+
+	free(pred);
+}
+
+void Grid::transformVF(int*& fperm, int*& vperm, int from_v1, int from_f2, int to_v1, int to_f2, bool flip)
+{
+	// Assume that the face and vertex are incident
+	// Find a vertex that corresponds to this change!
+	int v1_in_f2n = -1;
+	int f2_in_v1n = -1;
+	int u1_in_g2n = -1;
+	int g2_in_u1n = -1;
+
+	for ( int i = 0; i < this->getFaceDegree(from_f2); i++ )
+	{
+		if ( from_v1 == this->neighborFV(from_f2, i) )
+		{
+			v1_in_f2n = i;
+			break;
+		}
+	}
+	for ( int i = 0; i < this->getVertexDegree(from_v1); i++ )
+	{
+		if ( from_f2 == this->neighborVF(from_v1, i) )
+		{
+			f2_in_v1n = i;
+			break;
+		}
+	}
+
+	for ( int i = 0; i < this->getFaceDegree(to_f2); i++ )
+	{
+		if ( to_v1 == this->neighborFV(to_f2, i) )
+		{
+			u1_in_g2n = i;
+			break;
+		}
+	}
+	for ( int i = 0; i < this->getVertexDegree(to_v1); i++ )
+	{
+		if ( to_f2 == this->neighborVF(to_v1, i) )
+		{
+			g2_in_u1n = i;
+			break;
+		}
+	}
+
+	if ( v1_in_f2n < 0 || f2_in_v1n < 0 || u1_in_g2n < 0 || g2_in_u1n < 0 )
+	{
+		printf("--[transformVF(*,*,%d,%d,%d,%d,*)] Nonadjacent face/vertex combo!\n", from_v1, from_f2, to_v1, to_f2);
+		if ( v1_in_f2n < 0 )
+		{
+			printf("v1_in_f2n < 0.\n");
+		}
+		if ( f2_in_v1n < 0 )
+		{
+			printf("f2_in_v1n < 0.\n");
+		}
+		if ( u1_in_g2n < 0 )
+		{
+			printf("u1_in_g2n < 0.\n");
+		}
+		if ( g2_in_u1n < 0 )
+		{
+			printf("g2_in_u1n < 0.\n");
+		}
+		return; // false?
+	}
+
+	int v2 = this->neighborVV(from_v1, f2_in_v1n); // vertex follows face
+	int u2 = this->neighborVV(to_v1, g2_in_u1n); // vertex follows face
+	if ( flip )
+	{
+		u2 = this->neighborVV(to_v1, g2_in_u1n - 1); // vertex precedes face
+	}
+
+	this->transformVV(fperm, vperm, from_v1, v2, to_v1, u2, flip);
+}
+
+void Grid::transformFV(int*& fperm, int*& vperm, int from_f1, int from_v2, int to_f1, int to_v2, bool flip)
+{
+	// Simple change of coordinates!
+	this->transformVF(fperm, vperm, from_v2, from_f1, to_v2, to_f1, flip);
+}
+
+void Grid::transformFF(int*& fperm, int*& vperm, int from_f1, int from_f2, int to_f1, int to_f2, bool flip)
+{
+	// Assume that the faces are adjacent
+	// Find two vertices to transform into each other.
+	int f2_in_f1n = -1;
+	int f1_in_f2n = -1;
+	int g2_in_g1n = -1;
+	int g1_in_g2n = -1;
+
+	for ( int i = 0; i < this->getFaceDegree(from_f1); i++ )
+	{
+		if ( from_f2 == this->neighborFF(from_f1, i) )
+		{
+			f2_in_f1n = i;
+			break;
+		}
+	}
+
+	for ( int i = 0; i < this->getFaceDegree(from_f2); i++ )
+	{
+		if ( from_f1 == this->neighborFF(from_f2, i) )
+		{
+			f1_in_f2n = i;
+			break;
+		}
+	}
+
+	for ( int i = 0; i < this->getFaceDegree(to_f2); i++ )
+	{
+		if ( to_f1 == this->neighborFF(to_f2, i) )
+		{
+			g1_in_g2n = i;
+			break;
+		}
+	}
+
+	for ( int i = 0; i < this->getFaceDegree(to_f1); i++ )
+	{
+		if ( to_f2 == this->neighborFF(to_f1, i) )
+		{
+			g2_in_g1n = i;
+			break;
+		}
+	}
+
+	if ( f1_in_f2n < 0 || f2_in_f1n < 0 || g1_in_g2n < 0 || g2_in_g1n < 0 )
+	{
+		printf("--[transformFF(*,*,%d,%d,%d,%d,*)] Nonadjacent faces!\n", from_f1, from_f2, to_f1, to_f2);
+		return; // false?
+	}
+
+	int v1 = this->neighborFV(from_f1, f2_in_f1n);
+	int v2 = this->neighborFV(from_f1, f2_in_f1n + 1);
+
+	int u1 = this->neighborFV(to_f1, g2_in_g1n);
+	int u2 = this->neighborFV(to_f1, g2_in_g1n + 1);
+
+	if ( flip )
+	{
+		// swap these resulting vertices!
+		int t = u1;
+		u1 = u2;
+		u2 = t;
+	}
+
+	this->transformVV(fperm, vperm, v1, v2, u1, u2, flip);
+
+	if ( fperm[from_f1] != to_f1 || fperm[from_f2] != to_f2 )
+	{
+		printf("[transformFF] Error! %d -> %d (not %d) or %d -> %d (not %d)\n", from_f1, fperm[from_f1], to_f1, from_f2, fperm[from_f2], to_f2);
+	}
+}
+
+void Grid::printDualAdjLists()
+{
+//	printf("Vertices: %d\nFaces: %d\n", this->max_vertex_index, this->max_facial_index);
+
+	for ( int v = 0; v < this->max_vertex_index; v++ )
+	{
+		printf("%d : ", v);
+		for ( int i = 0; i < this->getVertexDegree(v); i++ )
+		{
+			// face, then vertex
+			if ( this->vbe[this->v[v] * 2 + 2 * i] >= 0 )
+			{
+				printf("%d ", this->vbe[this->v[v] * 2 + 2 * i] + this->max_vertex_index);
+			}
+			else
+			{
+				printf("-1 ");
+			}
+			printf("%d ", this->vbe[this->v[v] * 2 + 2 * i + 1]);
+		}
+		// printf(" : N = ");
+		// for ( int i = 0; i < this->getVertexDegree(v); i++ )
+		// {
+		// 	printf("%d ", this->neighborVV(v,i) );
+		// }
+
+		// printf(" : F = ");
+		// for ( int i = 0; i < this->getVertexDegree(v); i++ )
+		// {
+		// 	printf("%d ", this->neighborVF(v,i) );
+		// }
+		printf("\n");
+	}
+
+	for ( int f = 0; f < this->max_facial_index; f++ )
+	{
+		printf("%d : ", f + this->max_vertex_index);
+		for ( int i = 0; i < this->fd[f]; i++ )
+		{
+			// vertex, then face
+			printf("%d ", this->fbe[this->f[f] * 2 + 2 * i]);
+
+			if ( this->fbe[this->f[f] * 2 + 2 * i + 1] >= 0 )
+			{
+				printf("%d ", this->fbe[this->f[f] * 2 + 2 * i + 1] + this->max_vertex_index);
+			}
+			else
+			{
+				printf("-1 ");
+			}
+		}
+		// printf(" : N = ");
+		// for ( int i = 0; i < this->getFaceDegree(f); i++ )
+		// {
+		// 	printf("%d ", this->neighborFV(f,i) );
+		// }
+
+		// printf(" : F = ");
+		// for ( int i = 0; i < this->getFaceDegree(f); i++ )
+		// {
+		// 	printf("%d ", this->neighborFF(f,i) );
+		// }
+		printf("\n");
+	}
+}
+
+/**
+ * Given a vertex, determine the ball of a given radius.
+ */
+int* Grid::getVertexBall(int vertex, int radius, int& ball_size)
+{
+	int array_size = 100;
+	int* ball = (int*) malloc(array_size * sizeof(int));
+	static int* dists = (int*) malloc(this->max_vertex_index * sizeof(int));
+
+	ball[0] = vertex;
+
+	for ( int i = 0; i < this->max_vertex_index; i++ )
+	{
+		dists[i] = -1;
+	}
+
+	dists[vertex] = 0;
+	ball_size = 1;
+
+	std::queue<int> q;
+	q.push(vertex);
+
+	while ( q.size() > 0 )
+	{
+		int u = q.front();
+		q.pop();
+
+		for ( int i = 0; i < this->getVertexDegree(u); i++ )
+		{
+			int x = this->neighborVV(u, i);
+
+			if ( x < 0 )
+			{
+				continue;
+			}
+
+			if ( dists[x] < 0 )
+			{
+				dists[x] = dists[u] + 1;
+
+				while ( ball_size >= array_size )
+				{
+					array_size *= 2;
+					ball = (int*) realloc(ball, array_size * sizeof(int));
+				}
+
+				if ( dists[x] <= radius )
+				{
+					ball[ball_size++] = x;
+				}
+
+				if ( dists[x] < radius )
+				{
+					q.push(x);
+				}
+			}
+		}
+	}
+
+	return ball;
+}
+
