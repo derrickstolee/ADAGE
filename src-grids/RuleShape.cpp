@@ -50,6 +50,14 @@ RuleShape::RuleShape()
 	this->num_kernel_vertices = 0;
 	this->kernel_vertex_indices = 0;
 	this->kernel_vertex_coefficients = 0;
+
+	this->size_kernels = 0;
+	this->num_kernels = 0;
+	this->kernel_size = 0;
+	this->kernel_bound = 0;
+	this->kernel_bound_type = 0;
+	this->kernel_indices = 0;
+	this->kernel_coeffs = 0;
 }
 
 RuleShape::RuleShape(RuleShape* shape, int* fperm, int* vperm, int constraint_center, bool center_is_puller)
@@ -121,6 +129,32 @@ RuleShape::RuleShape(RuleShape* shape, int* fperm, int* vperm, int constraint_ce
 			this->kernel_vertex_indices[i][j] = vperm[shape->kernel_vertex_indices[i][j]];
 		}
 	}
+
+	this->size_kernels = shape->size_kernels;
+	this->num_kernels = shape->num_kernels;
+	this->kernel_size = (int*)malloc(this->size_kernels * sizeof(int));
+	this->kernel_bound = (int*)malloc(this->size_kernels * sizeof(int));
+	this->kernel_bound_type = (char*)malloc(this->size_kernels * sizeof(char));
+
+	this->kernel_indices = (int**)malloc(this->size_kernels * sizeof(int*));
+	this->kernel_coeffs = (int**)malloc(this->size_kernels * sizeof(int*));
+
+	for ( int i = 0; i < this->num_kernels; i++ )
+	{
+		this->kernel_size[i] = shape->kernel_size[i];
+		this->kernel_bound[i] = shape->kernel_bound[i];
+		this->kernel_bound_type[i] = shape->kernel_bound_type[i];
+
+		this->kernel_indices[i] = (int*)malloc(this->kernel_size[i] * sizeof(int));
+		this->kernel_coeffs[i] = (int*)malloc(this->kernel_size[i] * sizeof(int));
+
+		for ( int j = 0; j < this->kernel_size[i]; j++ )
+		{
+			this->kernel_coeffs[i][j] = shape->kernel_coeffs[i][j];
+
+			this->kernel_indices[i][j] = vperm[shape->kernel_indices[i][j]];
+		}
+	}
 }
 
 RuleShape::~RuleShape()
@@ -132,11 +166,120 @@ RuleShape::~RuleShape()
 	FREE_ARRAY2(this->kernel_vertex_indices, this->num_kernel_keys);
 	FREE_ARRAY(this->num_kernel_vertices);
 
+	FREE_ARRAY2(this->kernel_coeffs, this->num_kernels);
+	FREE_ARRAY2(this->kernel_indices, this->num_kernels);
+	FREE_ARRAY(this->kernel_size);
+	FREE_ARRAY(this->kernel_bound);
+	FREE_ARRAY(this->kernel_bound_type);
+
 	FREE_ARRAY(this->chargeable);
 
 	FREE_ARRAY(this->rule_name);
 	FREE_ARRAY(this->var_name);
 }
+
+
+/**
+ * How many kernels is this vertex in?
+ */
+int RuleShape::getKernelCount(int vertex)
+{
+	int count = 0;
+	for ( int i = 0; i < this->num_kernels; i++ )
+	{
+		for ( int j = 0; j < this->kernel_size[i]; j++ )
+		{
+			if ( vertex == this->kernel_indices[i][j] )
+			{
+				count++;
+			}
+		}
+	}
+
+	return count;
+}
+
+int RuleShape::centerIsWhichChargeable()
+{
+	if ( this->center_is_puller )
+	{
+		return -1;
+	}
+
+	return this->center_is_which_chargeable;
+}
+
+/**
+ * Is this rule complete for the given conf as per kernels?
+ */
+bool RuleShape::isComplete(Configuration* conf)
+{
+	for ( int i = 0; i < this->num_kernels; i++ )
+	{
+		bool this_kernel_complete = true;
+		for ( int j = 0; j < this->kernel_size[i]; j++ )
+		{
+			int v = this->kernel_indices[i][j];
+
+			if ( !conf->isElement(v) && !conf->isNonElement(v) )
+			{
+				this_kernel_complete = false;
+			}
+		}
+
+		if ( this_kernel_complete )
+		{
+			bool kernel_active = false;
+			int kernel_value = 0;
+			for ( int j = 0; j < this->kernel_size[i]; j++ )
+			{
+				if ( conf->isElement(this->kernel_indices[i][j]) )
+				{
+					kernel_value += this->kernel_coeffs[i][j];
+				}
+			}
+
+			if ( this->kernel_bound_type[i] == GEQ && kernel_value >= this->kernel_bound[i] )
+			{
+				kernel_active = true;
+			}
+
+			if ( this->kernel_bound_type[i] == LEQ && kernel_value <= this->kernel_bound[i] )
+			{
+				kernel_active = true;
+			}
+
+			if ( this->kernel_bound_type[i] == EQ && kernel_value == this->kernel_bound[i] )
+			{
+				kernel_active = true;
+			}
+
+			if ( kernel_active )
+			{
+				return true;
+			}
+		}
+		else
+		{
+			// if the kernel isn't complete, then the whole thing isn't complete!
+			return false;
+		}
+	}
+
+
+	for ( int i = 0; i < this->shape_conf->getNumVerticesInShape(); i++ )
+	{
+		int v = this->shape_conf->getVertexFromShape(i);
+
+		if ( !conf->isElement(v) && !conf->isNonElement(v) )
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 
 /**
  * modifyCoefficients modifies a list of coefficients depending on the given configuration.
@@ -150,18 +293,74 @@ void RuleShape::modifyCoefficients(Configuration* conf, LinearConstraint* constr
 		num_keys++;
 	}
 
+	int active_kernel = -1;
+
+	for ( int i = 0; i < this->num_kernels; i++ )
+	{
+		bool kernel_active = false;
+		int kernel_value = 0;
+		for ( int j = 0; j < this->kernel_size[i]; j++ )
+		{
+			if ( conf->isElement(this->kernel_indices[i][j]) )
+			{
+				kernel_value += this->kernel_coeffs[i][j];
+			}
+		}
+
+		if ( this->kernel_bound_type[i] == GEQ && kernel_value >= this->kernel_bound[i] )
+		{
+			kernel_active = true;
+			active_kernel = i;
+			break;
+		}
+
+		if ( this->kernel_bound_type[i] == LEQ && kernel_value <= this->kernel_bound[i] )
+		{
+			kernel_active = true;
+			active_kernel = i;
+			break;
+		}
+
+		if ( this->kernel_bound_type[i] == EQ && kernel_value == this->kernel_bound[i] )
+		{
+			kernel_active = true;
+			active_kernel = i;
+			break;
+		}
+	}
+
 	int* keys = (int*)malloc(num_keys * sizeof(int));
 
-	for ( int i = 0;i < this->num_kernel_keys; i++ )
+	for ( int i = 0; i < this->num_kernel_keys; i++ )
 	{
 		keys[i] = 0;
 
+		bool has_kernel_vert = ( active_kernel >= 0 ) ? false : true;
+
 		for ( int j = 0; j < this->num_kernel_vertices[i]; j++ )
 		{
-			if ( conf->isElement(this->kernel_vertex_indices[i][j]) )
+			int v = this->kernel_vertex_indices[i][j];
+
+			if ( !has_kernel_vert && active_kernel >= 0 )
+			{
+				for ( int jj = 0; jj < this->kernel_size[active_kernel]; jj++ )
+				{
+					if ( v == this->kernel_indices[active_kernel][jj] )
+					{
+						has_kernel_vert = true;
+					}
+				}
+			}
+
+			if ( conf->isElement(v) )
 			{
 				keys[i] += this->kernel_vertex_coefficients[i][j];
 			}
+		}
+
+		if ( !has_kernel_vert )
+		{
+			keys[i] = -1;
 		}
 	}
 
@@ -181,7 +380,7 @@ void RuleShape::modifyCoefficients(Configuration* conf, LinearConstraint* constr
 	else
 	{
 		// add all of them!
-		for ( int i = 0;i < this->num_chargeable; i++ )
+		for ( int i = 0; i < this->num_chargeable; i++ )
 		{
 			if ( this->num_chargeable > 1 )
 			{
@@ -192,6 +391,140 @@ void RuleShape::modifyCoefficients(Configuration* conf, LinearConstraint* constr
 			constraint->insertMonomial(coef, this->var_name, num_keys, keys);
 		}	
 	}
+
+	free(keys);
+}
+
+
+void RuleShape::getVariableName(Configuration* conf, int chargeable, char*& name, int& name_len)
+{
+	int num_keys = this->num_kernel_keys;
+
+	if ( this->num_chargeable > 1 )
+	{
+		num_keys++;
+	}
+
+	int active_kernel = -1;
+
+	for ( int i = 0; i < this->num_kernels; i++ )
+	{
+		bool kernel_active = false;
+		int kernel_value = 0;
+		for ( int j = 0; j < this->kernel_size[i]; j++ )
+		{
+			if ( conf->isElement(this->kernel_indices[i][j]) )
+			{
+				kernel_value += this->kernel_coeffs[i][j];
+			}
+		}
+
+		if ( this->kernel_bound_type[i] == GEQ && kernel_value >= this->kernel_bound[i] )
+		{
+			kernel_active = true;
+			active_kernel = i;
+			break;
+		}
+
+		if ( this->kernel_bound_type[i] == LEQ && kernel_value <= this->kernel_bound[i] )
+		{
+			kernel_active = true;
+			active_kernel = i;
+			break;
+		}
+
+		if ( this->kernel_bound_type[i] == EQ && kernel_value == this->kernel_bound[i] )
+		{
+			kernel_active = true;
+			active_kernel = i;
+			break;
+		}
+	}
+
+	int* keys = (int*)malloc(num_keys * sizeof(int));
+
+	for ( int i = 0; i < this->num_kernel_keys; i++ )
+	{
+		keys[i] = 0;
+
+		bool has_kernel_vert = ( active_kernel >= 0 ) ? false : true;
+
+		for ( int j = 0; j < this->num_kernel_vertices[i]; j++ )
+		{
+			int v = this->kernel_vertex_indices[i][j];
+
+			if ( !has_kernel_vert && active_kernel >= 0 )
+			{
+				for ( int jj = 0; jj < this->kernel_size[active_kernel]; jj++ )
+				{
+					if ( v == this->kernel_indices[active_kernel][jj] )
+					{
+						has_kernel_vert = true;
+					}
+				}
+			}
+
+			if ( conf->isElement(v) )
+			{
+				keys[i] += this->kernel_vertex_coefficients[i][j];
+			}
+		}
+
+		if ( !has_kernel_vert )
+		{
+			keys[i] = -1;
+		}
+	}
+
+	if ( this->num_chargeable > 1 )
+	{
+		keys[this->num_kernel_keys] = chargeable;
+	}
+	
+	Monomial* mon = new Monomial(1, this->var_name, num_keys, keys);
+
+	char* tname = mon->getBasicString();
+	int t_len = strlen(tname);
+
+	if ( name_len < t_len )
+	{
+		name_len = t_len + 1;
+		name = (char*)realloc(name, name_len);
+	}
+
+	strcpy(name, tname);
+
+	free(tname);
+	delete mon;
+
+	// name[0] = 0;
+
+	// strcat(name, this->var_name);
+	// strcat(name, "(");
+
+	// for ( int i = 0; i < this->num_kernel_keys; i++ )
+	// {
+	// 	if ( keys[i] < 0 )
+	// 	{
+	// 		strcat(name, "_");
+	// 	}
+	// 	else
+	// 	{
+	// 		sprintf(name + strlen(name), "%d", keys[i]);
+	// 	}
+
+	// 	if ( i < this->num_kernel_keys - 1 )
+	// 	{
+	// 		strcat(name, ",");
+	// 	}
+	// }
+
+	// if ( this->num_chargeable > 1 )
+	// {
+	// 	sprintf(name + strlen(name), ",%d", chargeable);
+	// }
+
+	// strcat(name, ")");
 
 	free(keys);
 }
@@ -258,13 +591,53 @@ void RuleShape::write(FILE* file)
 	}
 	fprintf(file, " ];\n");
 
+	fprintf(file, "kernels = [ \\\n");
+	for ( int i = 0; i < this->num_kernels; i++ )
+	{
+		for ( int j = 0; j < this->kernel_size[i]; j++ )
+		{
+			if ( j > 0 )
+			{
+				fprintf(file, " + ");
+			}
+
+			fprintf(file, "%d * x[%d]", this->kernel_coeffs[i][j], this->kernel_indices[i][j]);
+		}
+
+		switch( this->kernel_bound_type[i] )
+		{
+			case GEQ:
+				fprintf(file, " >= ");
+				break;
+			case LEQ:
+				fprintf(file, " <= ");
+				break;
+			case EQ:
+				fprintf(file, " == ");
+				break;
+			default:
+				fprintf(file, " ?? ");
+				break;
+		}
+
+		fprintf(file, "%d", this->kernel_bound[i]);
+
+		if( i < this->num_kernels - 1 )
+		{
+			fprintf(file, ", ");
+		}
+
+		fprintf(file, "\\\n");
+	}
+	fprintf(file, "  ];\n");
+
 	this->shape_conf->write(file);
 	fprintf(file, "#end RuleShape\n");
 }
 
 RuleShape* RuleShape::read(Grid* grid, FILE* file)
 {
-	size_t buflen = 100;
+	size_t buflen = 500;
 	char* buffer = (char*)malloc(buflen);
 
 	RuleShape* shape = new RuleShape();
@@ -334,22 +707,22 @@ RuleShape* RuleShape::read(Grid* grid, FILE* file)
 		}
 		else if ( strcmp(buffer, "keys = [ \\\n") == 0 )
 		{
-			int size_keys = 20;
+			int size_keys = 50;
 			shape->num_kernel_keys = 0;
 
 			shape->num_kernel_vertices = (int*)malloc(size_keys * sizeof(int));
 			shape->kernel_vertex_coefficients = (int**)malloc(size_keys * sizeof(int*));
 			shape->kernel_vertex_indices = (int**)malloc(size_keys * sizeof(int*));
 
-			while ( getline(&buffer, &buflen, file) > 0  && strcmp(buffer, "  ];\n") != 0 )
+			while ( getline(&buffer, &buflen, file) > 0  && strstr(buffer, "];\n") == 0 )
 			{
 
 				// check for a key!
 				char* charge = buffer;
 
 				shape->num_kernel_vertices[shape->num_kernel_keys] = 0;
-				shape->kernel_vertex_indices[shape->num_kernel_keys] = (int*)malloc(20*sizeof(int));
-				shape->kernel_vertex_coefficients[shape->num_kernel_keys] = (int*)malloc(20*sizeof(int));
+				shape->kernel_vertex_indices[shape->num_kernel_keys] = (int*)malloc(50*sizeof(int));
+				shape->kernel_vertex_coefficients[shape->num_kernel_keys] = (int*)malloc(50*sizeof(int));
 
 				int cur_num_kv = 0;
 
@@ -370,6 +743,76 @@ RuleShape* RuleShape::read(Grid* grid, FILE* file)
 
 				shape->num_kernel_vertices[shape->num_kernel_keys] = cur_num_kv;
 				(shape->num_kernel_keys)++;
+			}
+		}
+		else if ( strcmp(buffer, "kernels = [ \\\n") == 0 )
+		{ 
+			shape->size_kernels = 50;
+			shape->num_kernels = 0;
+
+			shape->kernel_size = (int*)malloc(shape->size_kernels * sizeof(int));
+			shape->kernel_bound = (int*)malloc(shape->size_kernels * sizeof(int));
+			shape->kernel_bound_type = (char*)malloc(shape->size_kernels * sizeof(char));
+			shape->kernel_indices = (int**)malloc(shape->size_kernels * sizeof(int*));
+			shape->kernel_coeffs = (int**)malloc(shape->size_kernels * sizeof(int*));
+
+			while ( getline(&buffer, &buflen, file) > 0  && strcmp(buffer, "  ];\n") != 0 )
+			{
+
+				// check for a key!
+				char* charge = buffer;
+
+				shape->kernel_size[shape->num_kernels] = 0;
+				shape->kernel_indices[shape->num_kernels] = (int*)malloc(50 * sizeof(int));
+				shape->kernel_coeffs[shape->num_kernels] = (int*)malloc(50 * sizeof(int));
+
+				int cur_num_kv = 0;
+
+				char* next = strtok(charge, "+");
+
+				while ( next != 0 )
+				{
+					if ( strstr(next, "x[") != 0 )
+					{
+						int coef = atoi(next);
+						int var = atoi(strstr(next, "x[") + 2);
+
+						shape->kernel_coeffs[shape->num_kernels][cur_num_kv] = coef;
+						shape->kernel_indices[shape->num_kernels][cur_num_kv] = var;
+
+						cur_num_kv++;
+					}
+
+					{
+						// we are looking for a bound.
+						char* number_start = 0;
+						if ( strstr(next, ">=") != 0 )
+						{
+							shape->kernel_bound_type[shape->num_kernels] = GEQ;
+							number_start = strstr(next, ">=") + 3;
+						}	
+						if ( strstr(next, "<=") != 0 )
+						{
+							shape->kernel_bound_type[shape->num_kernels] = LEQ;
+							number_start = strstr(next, "<=") + 3;
+						}	
+						if ( strstr(next, "==") != 0 )
+						{
+							shape->kernel_bound_type[shape->num_kernels] = EQ;
+							number_start = strstr(next, "==") + 3;
+						}	
+
+						if ( number_start > 0 )
+						{
+							shape->kernel_bound[shape->num_kernels] = atoi(number_start);
+						}
+					}
+
+					next = strtok(0, "+");
+				}
+
+				shape->kernel_size[shape->num_kernels] = cur_num_kv;
+				(shape->num_kernels)++;
 			}
 		}
 		else if ( strcmp(buffer, "#end RuleShape\n") == 0 )

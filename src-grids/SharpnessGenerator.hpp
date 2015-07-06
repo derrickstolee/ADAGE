@@ -1,12 +1,14 @@
 /*
- * ConstraintGenerator.hpp
+ * SharpnessGenerator.hpp
  *
- *  Created on: Apr 17, 2014
+ *  Created on: Jan 15, 2015
  *      Author: stolee
+ *
+ * An adaptation of ConstraintGenerator.hpp
  */
 
-#ifndef CONSTRAINTGENERATOR_HPP_
-#define CONSTRAINTGENERATOR_HPP_
+#ifndef SharpnessGenerator_HPP_
+#define SharpnessGenerator_HPP_
 
 #include <stdio.h>
 #include "Grid.hpp"
@@ -15,7 +17,9 @@
 #include "RuleShape.hpp"
 #include "SearchManager.hpp"
 #include "LinearProgram.hpp"
+#include "Trie.hpp"
 #include <stack>
+
 
 namespace adage
 {
@@ -23,7 +27,7 @@ namespace grids
 {
 
 /**
- * The ConstraintGenerator class generates the linear constraints for the discharging rules
+ * The SharpnessGenerator class generates the linear constraints for the discharging rules
  * to be properly satisfied.
  *
  * For now, we are only focusing on preserving charge at the faces, as vertices add and remove
@@ -36,10 +40,12 @@ namespace grids
  * It SHOULD be that the first level of the search selects the orbit of the center face and then the 
  * variations are built around it!
  */
-class ConstraintGenerator: public SearchManager
+class SharpnessGenerator : public SearchManager
 {
 protected:
 	Grid* grid;
+	adage::LinearProgram* lp;
+	fraction w;
 
 	/**
 	 * As we read the rules, we will fill full_conf with faces and vertices 
@@ -60,6 +66,7 @@ protected:
 	 */
 	Configuration* conf;
 	Configuration* blank_conf;
+	Configuration* cur_base;
 	void initConfigurations();
 	void freeConfigurations();
 
@@ -97,17 +104,26 @@ protected:
 	int getNextUndeterminedVertex();
 
 	/**
-	 * add the current constraint, as we have exactly determined every rule!
+	 * write the current configuration, as we have found a sharp example!
 	 */
-	bool addConstraint();
-	LinearProgram* lp;
-	
-	int max_num_constraints;
+	bool writeConfiguration();
+
 	bool vertices_distribute_evenly;
 
+	// List of generators for translation/rotation of the object
+	int from_v;
+	int from_v_n;
+	int max_to_v;
+	int num_generators;
+	int size_generators;
+	int* generators;
+	void initGenerators();
+	void freeGenerators();
+
+
 public:
-	ConstraintGenerator(Grid* grid, Configuration* conf, LinearProgram* lp);
-	virtual ~ConstraintGenerator();
+	SharpnessGenerator(Grid* grid, Configuration* conf, adage::LinearProgram* lp); // TODO: rules, variables, values
+	virtual ~SharpnessGenerator();
 
 	void clear();
 	void snapshot();
@@ -155,7 +171,13 @@ public:
 	virtual int isSolution();
 
 	virtual void importArguments(int argc, char** argv);
+
+
+	// Use existing configuration to find a way to cover the plane!
+	virtual bool findCover();
 };
 }
 }
-#endif /* CONSTRAINTGENERATOR_HPP_ */
+
+
+#endif /* SharpnessGenerator_HPP_ */

@@ -225,6 +225,7 @@ public:
 	 */
 	virtual Configuration* duplicate() const;
 	virtual Configuration* duplicate(int* fperm, int* vperm) const;
+	virtual Configuration* getEmptyConfiguration() const;
 
 	/**
 	 * Extensions will use the propagate method to expand the configuration to things that are "known"

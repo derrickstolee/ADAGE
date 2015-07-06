@@ -7,20 +7,28 @@
 
 #include <stdio.h>
 #include "Grid.hpp"
-#include "SquareGrid.hpp"
+#include "HexagonalGrid.hpp"
 
 using namespace adage::grids;
 
 int main(void)
 {
-	Grid* grid = new SquareGrid(20);
+	Grid* grid = new HexagonalGrid(20);
 
 	int N = grid->getMaxVertexIndex();
 	int F = grid->getMaxFacialIndex();
 
-	grid->printDualAdjLists();
+	Grid* blowup = grid->getTightBlowup();
+
+	Grid* dual = blowup->getDual();
+	dual->printDualAdjLists();
+
+	fprintf(stderr, "minface: %d\n", dual->getMaxVertexIndex());
+
 
 	delete grid;
+	delete blowup;
+	delete dual;
 
 	return 0;
 }

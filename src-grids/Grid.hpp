@@ -90,10 +90,10 @@ public:
 	 * The transform?? methods fill two permutations for how to transform vertices and faces
 	 * according to the given "rooted" objects.
 	 */
-	virtual void transformVV(int*& fperm, int*& vperm, int from_v1, int from_v2, int to_v1, int to_v2, bool flip = false);
-	virtual void transformVF(int*& fperm, int*& vperm, int from_v1, int from_f2, int to_v1, int to_f2, bool flip = false);
-	virtual void transformFV(int*& fperm, int*& vperm, int from_f1, int from_v2, int to_f1, int to_v2, bool flip = false);
-	virtual void transformFF(int*& fperm, int*& vperm, int from_f1, int from_f2, int to_f1, int to_f2, bool flip = false);
+	virtual bool transformVV(int*& fperm, int*& vperm, int from_v1, int from_v2, int to_v1, int to_v2, bool flip = false);
+	virtual bool transformVF(int*& fperm, int*& vperm, int from_v1, int from_f2, int to_v1, int to_f2, bool flip = false);
+	virtual bool transformFV(int*& fperm, int*& vperm, int from_f1, int from_v2, int to_f1, int to_v2, bool flip = false);
+	virtual bool transformFF(int*& fperm, int*& vperm, int from_f1, int from_f2, int to_f1, int to_f2, bool flip = false);
 
 	/**
 	 * Given a vertex, determine the ball of a given radius.
@@ -106,8 +106,11 @@ public:
 	/**
 	 * Replace each vertex with a face whose length is the degree of the original vertex.
 	 */
-	//Grid* getBlowup();
-	Grid* getDual();
+	Grid* getBlowup() const;
+	Grid* getDual() const;
+	Grid* getTightBlowup() const;
+	Grid* getSnub() const;
+	
 	void printDualAdjLists();
 };
 

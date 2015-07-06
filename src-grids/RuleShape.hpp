@@ -20,6 +20,10 @@
 
 #define KEY_TYPE long long int
 
+#define GEQ 0
+#define LEQ 1
+#define EQ 2
+
 namespace adage {
 
 namespace grids {
@@ -53,7 +57,7 @@ protected:
 	int* chargeable;
 
 	/**
-	 * Now, for the kernelization!
+	 * Now, for the variable function!
 	 *
 	 * In the duplication, these keys are translated with the permutation!
 	 */
@@ -62,6 +66,19 @@ protected:
 	int* num_kernel_vertices; // num terms in one key
 	int** kernel_vertex_indices; // the vertex indices in the key
 	int** kernel_vertex_coefficients; // the coefficients in the key
+
+	/**
+	 * These KERNELs are to stop checking other areas of the configuration
+	 * usually because these areas are "dense enough" and discharging can be
+	 * done in a "stupid" way.
+	 */
+	int size_kernels;
+	int num_kernels;
+	int* kernel_size;	
+	int* kernel_bound;
+	char* kernel_bound_type; // GEQ, EQ, LEQ
+	int** kernel_indices;
+	int** kernel_coeffs;
 
 	RuleShape();
 
@@ -82,17 +99,25 @@ public:
 	int getChargeable(int i);
 	void addChargeable(int i);
 
+	int centerIsWhichChargeable();
+
+	/**
+	 * How many kernels is this vertex in?
+	 */
+	int getKernelCount(int vertex);
+
+	/**
+	 * Is this rule complete for the given conf as per kernels?
+	 */
+	bool isComplete(Configuration* conf);
 
 
 	/**
 	 * modifyCoefficients modifies a list of coefficients depending on the given configuration.
 	 *
-     * @param coeffs : the integer coefficients for the variable list. Will be modified!
-     * @param conf : the specified configuration. We will use the element/nonelement values to determine the rule.
-     * @param coeff_center: the id of the center, which receives or sends charge (may not be the center of THIS shape!)
-     * @param is_face : Is the id of the center a face?
 	 */
 	void modifyCoefficients(Configuration* conf, LinearConstraint* constraint);
+	void getVariableName(Configuration* conf, int chargeable, char*& name, int& name_len);
 
 
 	void print();

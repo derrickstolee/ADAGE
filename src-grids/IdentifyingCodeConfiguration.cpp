@@ -240,6 +240,12 @@ Configuration* IdentifyingCodeConfiguration::IdentifyingCodeConfiguration::dupli
     return conf;
 }
 
+
+Configuration* IdentifyingCodeConfiguration::getEmptyConfiguration() const
+{
+    return new IdentifyingCodeConfiguration(this->grid, this->mode);
+}
+
 void IdentifyingCodeConfiguration::addElement(int i)
 {
     this->addElement(i, true);
@@ -249,6 +255,11 @@ void IdentifyingCodeConfiguration::addElement(int i)
 // then that constraint is removed!
 void IdentifyingCodeConfiguration::addElement(int i, bool check)
 {
+    if ( i < 0 )
+    {
+        return;
+    }
+
     Configuration::addElement(i);
 
     if (check) {
@@ -349,7 +360,7 @@ void IdentifyingCodeConfiguration::addNonElement(int i, bool check)
             }
 
             // if nonelements except one undecided, then fill that with an element!
-            if (num_undecided == 1 && num_elements == 0) {
+            if ( last_undecided > 0 && num_undecided == 1 && num_elements == 0) {
                 // we need to add this as an element!
                 // printf("ADDING ELEMENT %d TO AVOID ALL EMPTY AT %d\n", last_undecided, j);
                 this->addElement(last_undecided);

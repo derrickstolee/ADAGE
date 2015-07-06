@@ -17,11 +17,29 @@
 #include "macros.hpp"
 
 using namespace adage::grids;
+using namespace adage;
 
 void ConstraintGenerator::initConfigurations()
 {
     this->blank_conf = new Configuration(this->grid);
     this->full_conf = new Configuration(this->grid);
+
+    this->num_constraint_bases = this->grid->getNumVertexOrbits() + this->grid->getNumFacialOrbits();
+    this->constraint_bases = (Configuration**)malloc(this->num_constraint_bases*sizeof(Configuration*));
+
+    for ( int i = 0; i < this->grid->getNumVertexOrbits(); i++ )
+    {
+        this->constraint_bases[i] = new Configuration(this->grid);
+        this->constraint_bases[i]->addVertexToShape(this->grid->getVertexOrbitRepresentative(i));
+        this->constraint_bases[i]->setCenter(this->grid->getVertexOrbitRepresentative(i), true);
+    }
+
+    for ( int i = 0; i < this->grid->getNumFacialOrbits(); i++ )
+    {
+        this->constraint_bases[ this->grid->getNumVertexOrbits() + i ] = new Configuration(this->grid);
+        this->constraint_bases[ this->grid->getNumVertexOrbits() + i ]->addFaceToShape(this->grid->getFacialOrbitRepresentative(i));
+        this->constraint_bases[ this->grid->getNumVertexOrbits() + i ]->setCenter(this->grid->getFacialOrbitRepresentative(i), false);
+    }
 }
 
 void ConstraintGenerator::freeConfigurations()
@@ -35,6 +53,8 @@ void ConstraintGenerator::freeConfigurations()
         delete this->full_conf;
         this->full_conf = 0;
     }
+
+    DELETE_AND_FREE_ARRAY(this->constraint_bases, this->num_constraint_bases);
 }
 
 void ConstraintGenerator::initVariations()
@@ -89,88 +109,19 @@ void ConstraintGenerator::addRuleShape(RuleShape* rule_shape)
  */
 void ConstraintGenerator::determineVariations()
 {
-    // printf("determining variations...\n");
-	for ( int i = 0; i < this->num_shapes; i++ )
-	{
-		Configuration* c = this->rule_shapes[i]->getShape();
+    Configuration* cur_base = this->constraint_bases[this->cur_constraint_base];
 
-		if ( this->center_is_face )
-		{
-			if ( this->rule_shapes[i]->getType() == VARIABLE_TYPE_F2F )
-			{
-				// both the centered versions AND the other faces will work!
-				for ( int j = 0; j < this->grid->getFaceDegree(this->center_id); j++ )
-				{
-					int g1 = this->center_id;
-					int g2 = this->grid->neighborFF(this->center_id, j);
+    this->center_is_face = false;
+    for ( int ii = 0; ii < cur_base->getNumVerticesInShape(); ii++ )
+    {
+        this->center_id = cur_base->getVertexFromShape(ii);
+            
+        for ( int i = 0; i < this->num_shapes; i++ )
+        {
+            Configuration* c = this->rule_shapes[i]->getShape();
 
-					int f1 = c->getCenter();
-                    int f2 = this->grid->neighborFF(f1, 0);
-
-                    // center-to-center
-                    this->grid->transformFF(this->fperm, this->vperm, f1, f2, g1, g2);
-                    bool center_is_puller = true;
-                    this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm, this->center_id, center_is_puller));
-
-					for ( int k = 0; k < this->rule_shapes[i]->getNumChargeable(); k++ )
-					{
-						int f1 = this->rule_shapes[i]->getChargeable(k);
-                        int f2 = this->grid->neighborFF(f1, 0);
-
-                        // chargeable-to-center
-						this->grid->transformFF(this->fperm, this->vperm, f1, f2, g1, g2);
-                        bool center_is_puller = false;
-                        this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm, this->center_id, center_is_puller));
-					}
-				}
-			}
-            else if ( this->rule_shapes[i]->getType() == VARIABLE_TYPE_F2V )
-            {
-                for ( int j = 0; j < this->grid->getFaceDegree(this->center_id); j++ )
-                {
-                    int g1 = this->center_id;
-                    int u2 = this->grid->neighborFV(this->center_id, j);
-
-                    for ( int kk = 0; kk < this->rule_shapes[i]->getNumChargeable(); kk++ )
-                    {
-                        int f1 = this->rule_shapes[i]->getChargeable(kk);
-                        int v2 = this->grid->neighborFV(f1,0);
-
-                        this->grid->transformFV(this->fperm, this->vperm, f1, v2, g1, u2);
-
-                        bool center_is_puller = false;
-                        this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm,  this->center_id, center_is_puller));
-                    }
-                }
-            }
-            else if ( this->rule_shapes[i]->getType() == VARIABLE_TYPE_V2F )
-            {
-                for ( int j = 0; j < this->grid->getFaceDegree(this->center_id); j++ )
-                {
-                    int g1 = this->center_id;
-                    int u2 = this->grid->neighborFV(this->center_id, j);
-
-                    int f1 = c->getCenter();
-                    int v2 = this->grid->neighborFV(f1, 0);
-
-                    this->grid->transformFV(this->fperm, this->vperm, f1, v2, g1, u2);
-
-                    bool center_is_puller = true;
-                    this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm,  this->center_id, center_is_puller));
-                }
-            }
-			else
-			{
-                // printf("...shape %d is F2V and we are centered on a vertex (%d)!\n", i, this->center_id);
-                // this->rule_shapes[i]->print();
-				// printf("Warning! Variable type %d not implemented!\n", this->rule_shapes[i]->getType());
-                // this->rule_shapes[i]->print();
-			}
-		}
-		else
-		{
             // center is a vertex!
-			if ( this->rule_shapes[i]->getType() == VARIABLE_TYPE_F2V )
+            if ( this->rule_shapes[i]->getType() == VARIABLE_TYPE_F2V )
             {
                 // ok... center vertex only!
                 for ( int j = 0; j < this->grid->getVertexDegree(this->center_id); j++ )
@@ -181,10 +132,11 @@ void ConstraintGenerator::determineVariations()
                     int v1 = c->getCenter();
                     int f2 = this->grid->neighborVF(v1, 0);
 
-                    this->grid->transformVF(this->fperm, this->vperm, v1, f2, u1, g2);
-
-                    bool center_is_puller = true;
-                    this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm, this->center_id,  center_is_puller));
+                    if ( this->grid->transformVF(this->fperm, this->vperm, v1, f2, u1, g2) )
+                    {
+                        bool center_is_puller = true;
+                        this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm, this->center_id,  center_is_puller));
+                    }
                 }
             }
             else if ( this->rule_shapes[i]->getType() == VARIABLE_TYPE_V2V )
@@ -198,11 +150,11 @@ void ConstraintGenerator::determineVariations()
                     int v1 = c->getCenter();
                     int v2 = this->grid->neighborVV(v1,0);
 
-                    this->grid->transformVV(this->fperm, this->vperm, v1, v2, u1, u2);
-
-                    bool center_is_puller = false;
-                    this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm,  this->center_id, center_is_puller));
-                
+                    if ( this->grid->transformVV(this->fperm, this->vperm, v1, v2, u1, u2) )
+                    {
+                        bool center_is_puller = false;
+                        this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm,  this->center_id, center_is_puller));
+                    }
                 }
 
                 {
@@ -219,10 +171,11 @@ void ConstraintGenerator::determineVariations()
                         {
                             int v2 = this->grid->neighborVV(v1, l);
 
-                            this->grid->transformVV(this->fperm, this->vperm, v1, v2, u1, u2);
-
-                            bool center_is_puller = false;
-                            this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm, this->center_id,  center_is_puller));
+                            if ( this->grid->transformVV(this->fperm, this->vperm, v1, v2, u1, u2) )
+                            {
+                                bool center_is_puller = false;
+                                this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm, this->center_id,  center_is_puller));
+                            }
                         }
                     }
                 }
@@ -243,21 +196,111 @@ void ConstraintGenerator::determineVariations()
                         // lay this down in every direction!
                         int g2b = this->grid->neighborVF(u1,k);
 
-                        this->grid->transformVF(this->fperm, this->vperm, v1, f2, u1, g2b);
-
-                        bool center_is_puller = false;
-                        this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm, this->center_id,  center_is_puller));
+                        if ( this->grid->transformVF(this->fperm, this->vperm, v1, f2, u1, g2b) )
+                        {
+                            bool center_is_puller = false;
+                            this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm, this->center_id,  center_is_puller));
+                        }
                     }
                 }
             }
-		}
-	}
+        }
+    }
 
-    // this->full_conf->print();
+    if ( cur_base->getNumFacesInShape() > 0 )
+    {
+        this->center_is_face = true;
+        for ( int ii = 0; ii < cur_base->getNumFacesInShape(); ii++ )
+        {
+            this->center_id = cur_base->getFaceFromShape(ii);
+
+            for ( int i = 0; i < this->num_shapes; i++ )
+            {
+                Configuration* c = this->rule_shapes[i]->getShape();
+
+                if ( this->rule_shapes[i]->getType() == VARIABLE_TYPE_F2F )
+                {
+                    // both the centered versions AND the other faces will work!
+                    for ( int j = 0; j < this->grid->getFaceDegree(this->center_id); j++ )
+                    {
+                        int g1 = this->center_id;
+                        int g2 = this->grid->neighborFF(this->center_id, j);
+
+                        int f1 = c->getCenter();
+                        int f2 = this->grid->neighborFF(f1, 0);
+
+                        // center-to-center
+                        if ( this->grid->transformFF(this->fperm, this->vperm, f1, f2, g1, g2) )
+                        {
+                            bool center_is_puller = true;
+                            this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm, this->center_id, center_is_puller));
+
+                            for ( int k = 0; k < this->rule_shapes[i]->getNumChargeable(); k++ )
+                            {
+                                int f1 = this->rule_shapes[i]->getChargeable(k);
+                                int f2 = this->grid->neighborFF(f1, 0);
+
+                                // chargeable-to-center
+                                this->grid->transformFF(this->fperm, this->vperm, f1, f2, g1, g2);
+                                bool center_is_puller = false;
+                                this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm, this->center_id, center_is_puller));
+                            }
+                        }
+                    }
+                }
+                else if ( this->rule_shapes[i]->getType() == VARIABLE_TYPE_F2V )
+                {
+                    for ( int j = 0; j < this->grid->getFaceDegree(this->center_id); j++ )
+                    {
+                        int g1 = this->center_id;
+                        int u2 = this->grid->neighborFV(this->center_id, j);
+
+                        for ( int kk = 0; kk < this->rule_shapes[i]->getNumChargeable(); kk++ )
+                        {
+                            int f1 = this->rule_shapes[i]->getChargeable(kk);
+                            int v2 = this->grid->neighborFV(f1,0);
+
+                            if ( this->grid->transformFV(this->fperm, this->vperm, f1, v2, g1, u2) )
+                            {
+                                bool center_is_puller = false;
+                                this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm,  this->center_id, center_is_puller));
+                            }
+                        }
+                    }
+                }
+                else if ( this->rule_shapes[i]->getType() == VARIABLE_TYPE_V2F )
+                {
+                    for ( int j = 0; j < this->grid->getFaceDegree(this->center_id); j++ )
+                    {
+                        int g1 = this->center_id;
+                        int u2 = this->grid->neighborFV(this->center_id, j);
+
+                        int f1 = c->getCenter();
+                        int v2 = this->grid->neighborFV(f1, 0);
+
+                        if ( this->grid->transformFV(this->fperm, this->vperm, f1, v2, g1, u2) )
+                        {
+                            bool center_is_puller = true;
+                            this->addVariation(new RuleShape(this->rule_shapes[i], this->fperm, this->vperm,  this->center_id, center_is_puller));
+                        }
+                    }
+                }
+                else
+                {
+                    // printf("...shape %d is F2V and we are centered on a vertex (%d)!\n", i, this->center_id);
+                    // this->rule_shapes[i]->print();
+                    // printf("Warning! Variable type %d not implemented!\n", this->rule_shapes[i]->getType());
+                    // this->rule_shapes[i]->print();
+                } 
+            }
+        }
+    }   
+
+    //  this->full_conf->print();
 
     // for ( int i = 0; i < this->num_variations; i++ )
     // {
-    //     this->shape_variations[i]->getShape()->print();
+    //     this->shape_variations[i]->write(stdout);
     // }
 }
 
@@ -268,6 +311,43 @@ void ConstraintGenerator::addVariation(RuleShape* variation)
         this->shape_variations = (RuleShape**)realloc(this->shape_variations, this->size_variations * sizeof(RuleShape*));
     }
 
+
+    // test for being there already!
+    for ( int i = 0; i < this->num_variations; i++ )
+    {
+        if ( this->shape_variations[i]->getType() == variation->getType() &&
+            this->shape_variations[i]->getShape()->equals(variation->getShape()) &&
+             this->shape_variations[i]->getShape()->getCenter() == variation->getShape()->getCenter()  )
+        {
+            // check that the chargeables are the same!
+            bool same = true;
+            for ( int j = 0; j < variation->getNumChargeable(); j++ )
+            {
+                int x = variation->getChargeable(j);
+
+                bool has_chargeable = false;
+                for ( int k = 0; k < this->shape_variations[i]->getNumChargeable(); k++ )
+                {
+                    if ( x == this->shape_variations[i]->getChargeable(k) )
+                    {
+                        has_chargeable = true;
+                    }
+                }
+
+                if ( !has_chargeable )
+                {
+                    same = false;
+                }
+            }
+
+            if ( same )
+            {
+                delete variation;
+                return;
+            }
+        }
+    }
+    
     this->shape_variations[(this->num_variations)++] = variation;
 
     for ( int i = 0;i  < variation->getShape()->getNumVerticesInShape(); i++ )
@@ -287,7 +367,6 @@ void ConstraintGenerator::addVariation(RuleShape* variation)
         if ( this->full_conf->isFaceInShape(f) == false )
         {
             this->full_conf->addFaceToShape(f);
-            this->conf->addFaceToShape(f); // these are never added!
         }
 
         if ( variation->getShape()->getFaceSize(f) >= 0 )
@@ -308,22 +387,26 @@ void ConstraintGenerator::addVariation(RuleShape* variation)
 }
 
 /**
- * write the current constraint, as we have exactly determined every rule!
+ * add the current constraint, as we have exactly determined every rule!
  * 
  */
-bool ConstraintGenerator::writeConstraint()
+bool ConstraintGenerator::addConstraint()
 {
     int w_coeff = 0;
     int rhs = 0;
     int inequality_mode = INEQUALITY_GEQ;
 
-    if ( this->center_is_face == false )
+    for ( int i = 0; i < this->constraint_bases[this->cur_constraint_base]->getNumVerticesInShape(); i++ )
     {
-        w_coeff = -1;
+        int v = this->constraint_bases[this->cur_constraint_base]->getVertexFromShape(i);
 
-        if ( this->conf->isElement(this->center_id) )
+        // need one more w for every vertex (but it is on the left)
+        w_coeff--;
+
+        if ( this->conf->isElement(v) )
         {
-            rhs = -1;
+            // initial charge goes up for elements (but it is on the right)
+            rhs--;
         }
     }
 
@@ -335,138 +418,14 @@ bool ConstraintGenerator::writeConstraint()
         this->shape_variations[i]->modifyCoefficients(this->conf, constraint);
     }
 
-    char* buffer = constraint->getString();
+    this->lp->addConstraint(constraint);
+    constraint = 0;
 
-    if ( buffer != 0 )
-    {  
-        buffer = (char*)realloc(buffer, strlen(buffer)+2);
-
-        if (   this->constraint_trie->contains(buffer) == false )
-        {
-            this->constraint_trie->insert(buffer);
-            printf("%s\n", buffer);
-            fflush(stdout);
-
-            if ( this->constraint_trie->getSize() >= this->max_constraint_trie_size / 2 )
-            {
-                char* buffcopy = (char*)malloc(strlen(buffer)+1);
-                strcpy(buffcopy, buffer);
-                this->constraint_trie_backup->insert(buffcopy);
-            }
-
-            if ( this->constraint_trie->getSize() >= this->max_constraint_trie_size )
-            {
-                delete this->constraint_trie;
-                this->constraint_trie = this->constraint_trie_backup;
-                this->constraint_trie_backup = new Trie();
-            }
-        }
-        else
-        {   
-            free(buffer);
-        }
+    if( this->max_num_constraints > 0 && this->lp->getNumConstraints() > this->max_num_constraints )
+    {
+        printf("Quitting due to too many constraints!\n");
+        exit(0);
     }
-
-    // size_t buflen = 400;
-    // char* buffer = (char*)malloc(buflen);
-    // buffer[0] = 0;
-
-    // bool seen_before = false;
-    // for (int i = 0; i <= this->max_variable_index; i++) {
-    //     if (this->coefficients[i] != 0) {
-    //         if ( strlen(buffer) + 20 >= buflen )
-    //         {
-    //             buflen += 100;
-    //             buffer = (char*)realloc(buffer, buflen);
-    //         }
-
-    //         if (this->coefficients[i] == 1) {
-    //             if (seen_before) {
-    //                 strcat(buffer," + ");
-    //             }
-
-    //             sprintf(buffer + strlen(buffer), "x[%d]", i);
-    //         } else if (this->coefficients[i] == -1) {
-    //             if (seen_before) {
-    //                 strcat(buffer, " ");
-    //             }
-    //             sprintf(buffer + strlen(buffer), "- x[%d]", i);
-    //         } else if (this->coefficients[i] > 0) {
-    //             if (seen_before) {
-    //                 strcat(buffer," + ");
-    //             }
-    //             sprintf(buffer + strlen(buffer), "%d x[%d]", this->coefficients[i], i);
-    //         } else {
-    //             if (seen_before) {
-    //                 strcat(buffer, " ");
-    //             }
-    //             sprintf(buffer + strlen(buffer), "- %d x[%d]", -this->coefficients[i], i);
-    //         }
-
-    //         seen_before = true;
-    //     }
-    // }
-
-    // if ( strlen(buffer) + 20 >= buflen )
-    // {
-    //     buflen += 50;
-    //     buffer = (char*)realloc(buffer, buflen);
-    // }
-
-    // if ( this->vertices_distribute_evenly )
-    // {
-    // 	int f = this->conf->getCenter();
-    // 	fraction charge_expected(0,1);
-    // 	fraction charge_in(0,1);
-
-    // 	for ( int i = 0; i < this->grid->getFaceDegree(f); i++ )
-    // 	{
-    // 		int v = this->grid->neighborFV(f,i);
-
-    // 		charge_expected = charge_expected + fraction(1,this->grid->getVertexDegree(v));
-
-    // 		if ( this->conf->isElement(v) )
-    // 		{
-    // 			charge_in = charge_in + fraction(1,this->grid->getVertexDegree(v));
-    // 		}
-    // 	}
-
-
-    // 	// need a certain amount of charge, and we receive a certain amount to start!
-    // 	if ( charge_expected.b > 1)
-    // 	{
-    // 		sprintf(buffer + strlen(buffer), " - (%lld / %llu) w >= - %lld / %llu",  charge_expected.a, charge_expected.b, charge_in.a, charge_in.b );
-    // 	}
-    // 	else
-    // 	{
-    // 		sprintf(buffer + strlen(buffer), " - %lld w >= - %lld / %llu",  charge_expected.a, charge_in.a, charge_in.b );
-    // 	}
-    // }
-    // else
-    // {
-    // 	if ( this->center_is_face )
-    // 	{
-    // 		sprintf(buffer + strlen(buffer), " >= 0");
-    // 	}
-    // 	else
-    // 	{
-    // 		// we are centered around a vertex!
-    // 		if ( this->conf->isElement(this->conf->getCenter()))
-    // 		{
-    // 			// Starts with 1 
-    // 			// Ends with >= w
-    // 			sprintf(buffer + strlen(buffer), " - w >= - 1");
-    // 		}
-    // 		else
-    // 		{
-    // 			// Starts with 0 
-    // 			// Ends with >= w
-    // 			sprintf(buffer + strlen(buffer), " - w >= 0");
-    //    		}
-    // 	}
-    // }
-
-    delete constraint;
 
     return true;
 }
@@ -480,21 +439,37 @@ int ConstraintGenerator::getNextUndeterminedVertex()
     // Selects to fill a rule first!
 	for ( int i = 0; i < this->num_variations; i++ )
 	{
-        for ( int j = 0; j < this->shape_variations[i]->getShape()->getNumVerticesInShape(); j++ )
+        if ( this->shape_variations[i]->isComplete(this->conf) == false )
         {
-    		int v = this->shape_variations[i]->getShape()->getVertexFromShape(j);
+            int best_v = -1;
+            int best_num_kernels = -1;
+            for ( int j = 0; j < this->shape_variations[i]->getShape()->getNumVerticesInShape(); j++ )
+            {
+        		int v = this->shape_variations[i]->getShape()->getVertexFromShape(j);
 
-    		if ( this->conf->isElement(v) == false && this->conf->isNonElement(v) == false )
-    		{
-    			return v;
-    		}
+        		if ( this->conf->isElement(v) == false && this->conf->isNonElement(v) == false )
+        		{
+                    int num_kernels = this->shape_variations[i]->getKernelCount(v);
+
+                    if (num_kernels > best_num_kernels )
+                    {
+                        best_num_kernels = num_kernels;
+                        best_v = v;
+                    }
+        		}
+            }
+
+            if ( best_v >= 0 )
+            {
+                return best_v;
+            }
         }
 	}
 
     return -1;
 }
 
-ConstraintGenerator::ConstraintGenerator(Grid* grid, Configuration* conf) : SearchManager()
+ConstraintGenerator::ConstraintGenerator(Grid* grid, Configuration* conf, LinearProgram* lp) : SearchManager()
 {
     this->grid = grid;
     this->conf = conf->duplicate();
@@ -516,13 +491,14 @@ ConstraintGenerator::ConstraintGenerator(Grid* grid, Configuration* conf) : Sear
     this->center_is_face = false;
     this->center_id = -1;
 
+    this->max_num_constraints = -1;
+
     this->vertices_distribute_evenly = false;
 
     this->root = new SearchNode(0);
 
-    this->constraint_trie = new Trie();
-    this->constraint_trie_backup = new Trie();
-    this->max_constraint_trie_size = 10000;
+    this->lp = lp;
+
     this->initConfigurations();
     this->initRuleShapes();
     this->initVariations();
@@ -534,11 +510,11 @@ ConstraintGenerator::~ConstraintGenerator()
     this->freeVariations();
     this->freeConfigurations();
     delete this->conf;
-    delete this->constraint_trie;
-    delete this->constraint_trie_backup;
 
     FREE_ARRAY(this->fperm);
     FREE_ARRAY(this->vperm);
+
+    this->lp = 0;
 }
 
 void ConstraintGenerator::clear()
@@ -574,7 +550,7 @@ void ConstraintGenerator::rollback()
  * @return the label for the new node. -1 if none.
  */
 LONG_T ConstraintGenerator::pushNext()
-{
+{    
     SearchNode* parent = 0;
     LONG_T next_child = 0;
 
@@ -587,29 +563,15 @@ LONG_T ConstraintGenerator::pushNext()
     }
 
     if (this->stack.size() == 0) {
-        // we have not decided on the center orbit!
-        if (next_child >= 2) {
+        // we have not decided on the constraint base!
+        if ( next_child >= this->num_constraint_bases ) {
             return -1;
         }
-
-        if ( this->vertices_distribute_evenly && next_child >= 1 )
-        {
-        	return -1;
-        }
-    }
-    else if (this->stack.size() == 1) {
-        // we have not decided on the center orbit!
-        if ( this->center_is_face && next_child >= this->grid->getNumFacialOrbits()) {
-            return -1;
-        }
-        else if ( !this->center_is_face && next_child >= this->grid->getNumVertexOrbits() )
-    	{
-    		return -1;
-    	}
-    } else if (next_child >= 2) {
-        // we have tried nonelement and element!
-        return -1;
     } else if ( this->getNextUndeterminedVertex() < 0) {
+        return -1;
+    } else if ( next_child >= 2 )
+    {
+        // we have tried element and non-element!
         return -1;
     }
 
@@ -625,7 +587,6 @@ LONG_T ConstraintGenerator::pushNext()
  */
 LONG_T ConstraintGenerator::pushTo(LONG_T child)
 {
-    // printf("pushTo(%llX)\n", child);
     SearchNode* parent = 0;
 
     if (this->stack.size() == 0) {
@@ -639,49 +600,9 @@ LONG_T ConstraintGenerator::pushTo(LONG_T child)
     this->snapshot();
 
     if (this->stack.size() == 0) {
-    	if ( child == 0 )
-    	{
-    		// Face!
-    		this->center_is_face = true;
-    	}
-    	else
-    	{
-    		// Vertex!
-    		this->center_is_face = false;
-    	}
-    } else if (this->stack.size() == 1) {
-        // for this, we select the orbit!
-        if ( this->center_is_face )
-        {
-	        int f = this->grid->getFacialOrbitRepresentative(child);
-
-	        this->full_conf->addFaceToShape(f);
-	        this->conf->addFaceToShape(f);
-	        this->blank_conf->addFaceToShape(f);
-
-	        this->full_conf->setCenter(f, false);
-	        this->conf->setCenter(f, false);
-	        this->blank_conf->setCenter(f, false);
-
-            this->center_id = f;
-	    }
-	    else
-	    {
-	        int f = this->grid->getVertexOrbitRepresentative(child);
-
-	        this->full_conf->addVertexToShape(f);
-	        this->conf->addVertexToShape(f);
-	        this->blank_conf->addVertexToShape(f);
-
-	        this->full_conf->setCenter(f, true);
-	        this->conf->setCenter(f, true);
-	        this->blank_conf->setCenter(f, true);
-
-            this->center_id = f;
-	    }
+        this->cur_constraint_base = child;
 
         this->determineVariations();
-    
     } else {
         int v = this->getNextUndeterminedVertex();
 
@@ -708,11 +629,10 @@ LONG_T ConstraintGenerator::pushTo(LONG_T child)
  */
 LONG_T ConstraintGenerator::pop()
 {
-    // printf("pop()\n");
-
     SearchNode* node = 0;
     LONG_T label = 0;
 
+    this->rollback();
 
     if (this->stack.size() == 0) {
         node = this->root;
@@ -724,14 +644,12 @@ LONG_T ConstraintGenerator::pop()
         label = node->label;
         delete node;
 
-        if ( this->stack.size() == 1 )
+        if ( this->stack.size() == 0 )
         {
             this->freeVariations();
             this->initVariations();
         }
     }
-
-    this->rollback();
 
     return label;
 }
@@ -762,7 +680,7 @@ int ConstraintGenerator::isSolution()
 {
     if ( this->stack.size() > 2 && this->getNextUndeterminedVertex() < 0) {
         // this->conf->print();
-        this->writeConstraint();
+        this->addConstraint();
     }
 
     return 0;
@@ -770,16 +688,21 @@ int ConstraintGenerator::isSolution()
 
 void ConstraintGenerator::importArguments(int argc, char** argv)
 {
-    this->max_constraint_trie_size = 10000;
     SearchManager::importArguments(argc, argv);
+
+    bool found_mode = false;
 
     for ( int i = 0; i < argc; i++ )
     {
-        if ( strcmp(argv[i], "--triesize") == 0 )
+        if ( strcmp(argv[i],"run") == 0 || strcmp(argv[i],"generate") == 0 )
         {
-            this->max_constraint_trie_size = atoi(argv[i+1]);
+            found_mode = true;
         }
-        else if ( strcmp(argv[i], "--rules") == 0 )
+        if ( strcmp(argv[i],"--maxconstraints") == 0 )
+        {
+            this->max_num_constraints = atoi(argv[i+1]);
+        }
+        if ( strcmp(argv[i], "--rules") == 0 )
         {
             // load rule shapes!
             FILE* file = fopen(argv[i+1], "r");
@@ -797,10 +720,12 @@ void ConstraintGenerator::importArguments(int argc, char** argv)
                     bool found = false;
                     for ( int j = 0; j < argc; j++ )
                     {
-                        if ( strcmp(argv[j]+2, shape->getRuleName()) == 0 )
+                        if ( strstr( shape->getRuleName(), argv[j]+2) == shape->getRuleName() && strlen(shape->getRuleName()) <= strlen(argv[j]+2) + 1 )
                         {
                             found = true;
                             this->addRuleShape(shape);
+
+                            // shape->write(stdout);
                         }
                     }
 
@@ -817,5 +742,45 @@ void ConstraintGenerator::importArguments(int argc, char** argv)
                 free(buffer);
             }
         }
+        else if ( strcmp(argv[i], "--bases") == 0 )
+        {
+            // load rule shapes!
+            FILE* file = fopen(argv[i+1], "r");
+
+            // clear old bases
+            for ( int i = 0; i < this->num_constraint_bases; i++ )
+            {
+                delete this->constraint_bases[i];
+                this->constraint_bases[i] = 0;
+            }
+
+            this->num_constraint_bases = 0;
+            this->constraint_bases = (Configuration**)realloc(this->constraint_bases, 50*sizeof(Configuration*));
+
+            char* buffer = 0;
+            size_t buflen = 0;
+
+            while ( getline( &buffer, &buflen, file ) > 0 )
+            {
+                if ( strcmp(buffer, "#begin Configuration\n") == 0)
+                {
+                    this->constraint_bases[this->num_constraint_bases] = Configuration::read(this->grid, file);
+                    (this->num_constraint_bases)++;
+                }
+            }
+
+            fclose(file);
+            if ( buflen > 0 )
+            {
+                free(buffer);
+            }
+        }
+    }
+
+    if ( !found_mode )
+    {
+        this->maxDepth = 1000;
+        this->killtime = 60 * 60 * 24 * 30; // month!
+        this->deepeningMode = DEEPEN_FULL;
     }
 }

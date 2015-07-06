@@ -679,7 +679,7 @@ void Configuration::addNonElement(int i)
     }
 
     if (this->isBitOn(this->vertex_is_element, i)) {
-        printf("[Configuration::addElement(%d)] This vertex is alread an element!\n", i);
+        printf("[Configuration::addNonElement(%d)] This vertex is alread an element!\n", i);
         exit(1);
     }
 
@@ -1123,6 +1123,11 @@ Configuration* Configuration::duplicate(int* fperm, int* vperm) const
     return conf;
 }
 
+Configuration* Configuration::getEmptyConfiguration() const
+{
+    return new Configuration(this->grid);
+}
+
 /********************************************************************
  *  PROPAGATION                                                                             *
  ********************************************************************/
@@ -1193,15 +1198,18 @@ void Configuration::computeSymmetry(bool allow_flip)
             for (int i = 0; i < this->grid->getVertexDegree(u1); i++) {
                 u2 = this->grid->neighborVV(u1, i);
 
-                this->grid->transformVV(autom_f[num_automs], autom_v[num_automs], v1, v2, u1, u2, false);
+                bool result = this->grid->transformVV(autom_f[num_automs], autom_v[num_automs], v1, v2, u1, u2, false);
 
-                // is this an automorphism?
-                Configuration* conf = this->duplicate(autom_f[num_automs], autom_v[num_automs]);
+                if ( result )
+                {
+                    // is this an automorphism?
+                    Configuration* conf = this->duplicate(autom_f[num_automs], autom_v[num_automs]);
 
-                if (this->equals(conf)) {
-                    num_automs++;
+                    if (this->equals(conf)) {
+                        num_automs++;
+                    }
+                    delete conf;
                 }
-                delete conf;
             }
 
             if (allow_flip) {
@@ -1213,16 +1221,19 @@ void Configuration::computeSymmetry(bool allow_flip)
 	                	continue;
 	                }
 
-                    this->grid->transformVV(autom_f[num_automs], autom_v[num_automs], v1, v2, u1, u2, true);
+                    bool result = this->grid->transformVV(autom_f[num_automs], autom_v[num_automs], v1, v2, u1, u2, true);
 
-                    // is this an automorphism?
-                    Configuration* conf = this->duplicate(autom_f[num_automs], autom_v[num_automs]);
+                    if ( result )
+                    {
+                        // is this an automorphism?
+                        Configuration* conf = this->duplicate(autom_f[num_automs], autom_v[num_automs]);
 
-                    if (this->equals(conf)) {
-                        num_automs++;
+                        if (this->equals(conf)) {
+                            num_automs++;
+                        }
+
+                        delete conf;
                     }
-
-                    delete conf;
                 }
             }
         } else {
@@ -1241,24 +1252,10 @@ void Configuration::computeSymmetry(bool allow_flip)
                 	continue;
                 }
 
-                this->grid->transformFV(autom_f[num_automs], autom_v[num_automs], f1, v2, g1, u2, false);
+                bool result = this->grid->transformFV(autom_f[num_automs], autom_v[num_automs], f1, v2, g1, u2, false);
 
-                // is this an automorphism?
-                Configuration* conf = this->duplicate(autom_f[num_automs], autom_v[num_automs]);
-
-                if (this->equals(conf)) {
-                    num_automs++;
-                }
-
-                delete conf;
-            }
-
-            if (allow_flip) {
-                for (int i = 0; i < this->grid->getFaceDegree(g1); i++) {
-                    u2 = this->grid->neighborFV(g1, i);
-
-                    this->grid->transformFV(autom_f[num_automs], autom_v[num_automs], f1, v2, g1, u2, true);
-
+                if ( result )
+                {
                     // is this an automorphism?
                     Configuration* conf = this->duplicate(autom_f[num_automs], autom_v[num_automs]);
 
@@ -1267,6 +1264,26 @@ void Configuration::computeSymmetry(bool allow_flip)
                     }
 
                     delete conf;
+                }
+            }
+
+            if (allow_flip) {
+                for (int i = 0; i < this->grid->getFaceDegree(g1); i++) {
+                    u2 = this->grid->neighborFV(g1, i);
+
+                    bool result = this->grid->transformFV(autom_f[num_automs], autom_v[num_automs], f1, v2, g1, u2, true);
+
+                    if ( result )
+                    {
+                        // is this an automorphism?
+                        Configuration* conf = this->duplicate(autom_f[num_automs], autom_v[num_automs]);
+
+                        if (this->equals(conf)) {
+                            num_automs++;
+                        }
+
+                        delete conf;
+                    }
                 }
             }
         }
@@ -1295,24 +1312,10 @@ void Configuration::computeSymmetry(bool allow_flip)
                 	continue;
                 }
 
-                this->grid->transformVV(autom_f[num_automs], autom_v[num_automs], v1, v2, u1, u2);
+                bool result = this->grid->transformVV(autom_f[num_automs], autom_v[num_automs], v1, v2, u1, u2);
 
-                // is this an automorphism?
-                Configuration* conf = this->duplicate(autom_f[num_automs], autom_v[num_automs]);
-
-                if (this->equals(conf)) {
-                    num_automs++;
-                }
-
-                delete conf;
-            }
-
-            if (allow_flip) {
-                for (int i = 0; i < this->grid->getVertexDegree(v1); i++) {
-                    u2 = this->grid->neighborVV(v1, i);
-
-                    this->grid->transformVV(autom_f[num_automs], autom_v[num_automs], v1, v2, u1, u2, true);
-
+                if ( result )
+                {
                     // is this an automorphism?
                     Configuration* conf = this->duplicate(autom_f[num_automs], autom_v[num_automs]);
 
@@ -1321,6 +1324,25 @@ void Configuration::computeSymmetry(bool allow_flip)
                     }
 
                     delete conf;
+                }
+            }
+
+            if (allow_flip) {
+                for (int i = 0; i < this->grid->getVertexDegree(v1); i++) {
+                    u2 = this->grid->neighborVV(v1, i);
+
+                    bool result = this->grid->transformVV(autom_f[num_automs], autom_v[num_automs], v1, v2, u1, u2, true);
+
+                    if ( result ) {
+                        // is this an automorphism?
+                        Configuration* conf = this->duplicate(autom_f[num_automs], autom_v[num_automs]);
+
+                        if (this->equals(conf)) {
+                            num_automs++;
+                        }
+
+                        delete conf;
+                    }
                 }
             }
         }
@@ -1687,7 +1709,7 @@ char* Configuration::getRotationStringVV(int start_v, int first_neighbor_v, int*
         for (int i = 0; i < this->grid->getVertexDegree(v); i++) {
             int u = this->grid->neighborVV(v, i + pindex);
 
-            if (vparent[u] < 0) {
+            if ( u >= 0 && vparent[u] < 0) {
                 vparent[u] = v;
                 q.push(u);
             }
