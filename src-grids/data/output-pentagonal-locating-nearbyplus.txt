@@ -1,0 +1,148 @@
+#begin RuleShape
+rule_name = "nearbyplusa";
+var_name = "npa";
+rule_type = 3;
+keys = [ \
+    1 * x[0], \
+    1 * x[3], \
+    1 * x[2], \
+    1 * x[17], \
+    1 * x[9], \
+    1 * x[8], \
+    1 * x[5], \
+    1 * x[1], \
+    1 * x[4], \
+    1 * x[11], \
+    1 * x[7], \
+    1 * x[44], \
+    1 * x[28], \
+    1 * x[18], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 2 ];
+kernels = [ \
+1 * x[0] + 1 * x[3] + 1 * x[2] + 1 * x[17] + 1 * x[9] + 1 * x[8] >= 4, \
+1 * x[0] + 1 * x[3] + 1 * x[2] + 1 * x[17] + 1 * x[9] + 1 * x[8] + 1 * x[5] + 1 * x[1] >= 5, \
+1 * x[0] + 1 * x[3] + 1 * x[2] + 1 * x[17] + 1 * x[9] + 1 * x[8] + 1 * x[5] + 1 * x[1] + 1 * x[4] + 1 * x[11] >= 6, \
+1 * x[0] + 1 * x[3] + 1 * x[2] + 1 * x[17] + 1 * x[9] + 1 * x[8] + 1 * x[5] + 1 * x[1] + 1 * x[4] + 1 * x[11] + 1 * x[7] + 1 * x[44] >= 7\
+  ];
+#begin Configuration
+shape = [ 0, 3, 2, 17, 9, 8, 5, 1, 4, 11, 7, 44, 28, 18 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+vertex_colors = { 0 : 0, 3 : 1, 2 : 3, 17 : 10, 9 : 4, 8 : 5, 5 : 6, 1 : 2, 4 : 7, 11 : 8, 7 : 9, 44 : 13, 28 : 12, 18 : 11 };
+face_colors = {  };
+canonical_string = C0V0V0V1V|22222222222233333333322|0
+#end Configuration
+#end RuleShape
+#begin RuleShape
+rule_name = "nearbyplusb";
+var_name = "npb";
+rule_type = 3;
+keys = [ \
+    1 * x[0], \
+    1 * x[3], \
+    1 * x[2], \
+    1 * x[17], \
+    1 * x[9], \
+    1 * x[8], \
+    1 * x[5], \
+    1 * x[1], \
+    1 * x[4], \
+    1 * x[11], \
+    1 * x[29], \
+    1 * x[15], \
+    1 * x[12], \
+    1 * x[20], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 0 ];
+kernels = [ \
+1 * x[0] + 1 * x[3] + 1 * x[2] + 1 * x[17] + 1 * x[9] + 1 * x[8] >= 4, \
+1 * x[0] + 1 * x[3] + 1 * x[2] + 1 * x[17] + 1 * x[9] + 1 * x[8] + 1 * x[5] + 1 * x[1] >= 5, \
+1 * x[0] + 1 * x[3] + 1 * x[2] + 1 * x[17] + 1 * x[9] + 1 * x[8] + 1 * x[5] + 1 * x[1] + 1 * x[4] + 1 * x[11] >= 6, \
+1 * x[0] + 1 * x[3] + 1 * x[2] + 1 * x[17] + 1 * x[9] + 1 * x[8] + 1 * x[5] + 1 * x[1] + 1 * x[4] + 1 * x[11] + 1 * x[29] + 1 * x[15] >= 7\
+  ];
+#begin Configuration
+shape = [ 0, 3, 2, 17, 9, 8, 5, 1, 4, 11, 29, 15, 12, 20 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+vertex_colors = { 0 : 0, 3 : 1, 2 : 3, 17 : 9, 9 : 4, 8 : 5, 5 : 6, 1 : 2, 4 : 7, 11 : 8, 29 : 10, 15 : 11, 12 : 12, 20 : 13 };
+face_colors = {  };
+canonical_string = C0V0V0V1V|2222222223232222|0
+#end Configuration
+#end RuleShape
+#begin RuleShape
+rule_name = "nearbyplusc";
+var_name = "npc";
+rule_type = 3;
+keys = [ \
+    1 * x[0], \
+    1 * x[3], \
+    1 * x[2], \
+    1 * x[17], \
+    1 * x[9], \
+    1 * x[8], \
+    1 * x[5], \
+    1 * x[1], \
+    1 * x[4], \
+    1 * x[11], \
+    1 * x[10], \
+    1 * x[32], \
+    1 * x[22], \
+    1 * x[7], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 1 ];
+kernels = [ \
+1 * x[0] + 1 * x[3] + 1 * x[2] + 1 * x[17] + 1 * x[9] + 1 * x[8] >= 4, \
+1 * x[0] + 1 * x[3] + 1 * x[2] + 1 * x[17] + 1 * x[9] + 1 * x[8] + 1 * x[5] + 1 * x[1] >= 5, \
+1 * x[0] + 1 * x[3] + 1 * x[2] + 1 * x[17] + 1 * x[9] + 1 * x[8] + 1 * x[5] + 1 * x[1] + 1 * x[4] + 1 * x[11] >= 6, \
+1 * x[0] + 1 * x[3] + 1 * x[2] + 1 * x[17] + 1 * x[9] + 1 * x[8] + 1 * x[5] + 1 * x[1] + 1 * x[4] + 1 * x[11] + 1 * x[10] + 1 * x[32] >= 7\
+  ];
+#begin Configuration
+shape = [ 0, 3, 2, 17, 9, 8, 5, 1, 4, 11, 10, 32, 22, 7 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+vertex_colors = { 0 : 0, 3 : 1, 2 : 3, 17 : 10, 9 : 4, 8 : 5, 5 : 6, 1 : 2, 4 : 7, 11 : 8, 10 : 11, 32 : 12, 22 : 13, 7 : 9 };
+face_colors = {  };
+canonical_string = C0V0V0V1V|2222222222233333222|0
+#end Configuration
+#end RuleShape
+#begin RuleShape
+rule_name = "nearbyplusd";
+var_name = "npd";
+rule_type = 3;
+keys = [ \
+    1 * x[2], \
+    1 * x[16], \
+    1 * x[28], \
+    1 * x[17], \
+    1 * x[7], \
+    1 * x[3], \
+    1 * x[0], \
+    1 * x[9], \
+    1 * x[1], \
+    1 * x[4], \
+    1 * x[11], \
+    1 * x[13], \
+    1 * x[22], \
+    1 * x[26], \
+    1 * x[43], \
+    1 * x[44], \
+  ];
+center_id = 2;
+center_is_face = false;
+chargeable = [ 

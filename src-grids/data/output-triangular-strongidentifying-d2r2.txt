@@ -1,0 +1,2 @@
+grid-cplex.exe(85052,0x7fff74432300) malloc: *** error for object 0x7fbe4b4080e8: incorrect checksum for freed object - object was probably modified after being freed.
+*** set a breakpoint in malloc_error_break to debug

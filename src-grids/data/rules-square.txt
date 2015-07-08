@@ -1,0 +1,430 @@
+# Rules for Square Grid!
+
+
+#begin RuleShape
+rule_name = "vertex0";
+var_name = "v0";
+rule_type = 3;
+# <= 2*7 possibilities:
+keys = [ \
+    1 * x[0], \
+    1 * x[1] + 1 * x[2] + 1 * x[3] + 1 * x[4] + 1 * x[7] + 1 * x[10] \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 0 ];
+#begin Configuration
+shape = [0, 1, 2, 3, 4, 7, 10 ];
+faces = [0, 1, 2, 7, 14, 15];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+
+#begin RuleShape
+rule_name = "vertex1";
+var_name = "v1";
+rule_type = 3;
+# <= 2^7 possibilities:
+keys = [ \
+    1 * x[0], \
+    1 * x[1], \
+    1 * x[2], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[7], \
+    1 * x[10] \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 0 ];
+#begin Configuration
+shape = [0, 1, 2, 3, 4, 7, 10 ];
+faces = [0, 1, 2, 7, 14, 15];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+
+#begin RuleShape
+rule_name = "c1";
+var_name = "c1";
+rule_type = 1;
+# <= 2^8 possibilities:
+keys = [ \
+    1 * x[0], \
+    1 * x[2], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[7], \
+    1 * x[10], \
+    1 * x[11], \
+    1 * x[22] \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 4 ];
+#begin Configuration
+shape = [0, 2, 3, 4, 7, 10, 11, 22 ];
+faces = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+
+
+#begin RuleShape
+rule_name = "c1+";
+var_name = "c1p";
+rule_type = 1;
+# <= 2^10 possibilities:
+keys = [ \
+    1 * x[0], \
+    1 * x[1], \
+    1 * x[2], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[7], \
+    1 * x[10], \
+    1 * x[11], \
+    1 * x[12], \
+    1 * x[22] \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 4 ];
+#begin Configuration
+shape = [0, 1, 2, 3, 4, 7, 10, 11, 12, 22 ];
+faces = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "c1++";
+var_name = "c1pp";
+rule_type = 1;
+# <= 2^14 possibilities:
+keys = [ \
+    1 * x[0], \
+    1 * x[1], \
+    1 * x[2], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[7], \
+    1 * x[9], \
+    1 * x[10], \
+    1 * x[11], \
+    1 * x[12], \
+    1 * x[17], \
+    1 * x[20], \
+    1 * x[22], \
+    1 * x[36] \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 4 ];
+#begin Configuration
+shape = [ 0, 1, 2, 3, 4, 7, 9, 10, 11, 12, 17, 20, 22, 36 ];
+faces = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+
+#begin RuleShape
+rule_name = "c2a";
+var_name = "c2a";
+rule_type = 1;
+# <= 2^8 possibilities:
+keys = [ \
+    1 * x[0], \
+    1 * x[1], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[7], \
+    1 * x[10], \
+    1 * x[11], \
+    1 * x[17] \
+  ];
+center_id = 7;
+center_is_face = false;
+chargeable = [ 4 ];
+#begin Configuration
+shape = [ 0, 1, 3, 4, 7, 10, 11, 17 ];
+faces = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+
+#begin RuleShape
+rule_name = "c2a+";
+var_name = "c2ap";
+rule_type = 1;
+# <= 2^10 possibilities:
+keys = [ \
+    1 * x[0], \
+    1 * x[1], \
+    1 * x[2], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[7], \
+    1 * x[9], \
+    1 * x[10], \
+    1 * x[11], \
+    1 * x[17] \
+  ];
+center_id = 7;
+center_is_face = false;
+chargeable = [ 4 ];
+#begin Configuration
+shape = [ 0, 1, 2, 3, 4, 7, 9, 10, 11, 17 ];
+faces = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "c2a++";
+var_name = "c2app";
+rule_type = 1;
+# <= 2^14 possibilities:
+keys = [ \
+    1 * x[0], \
+    1 * x[1], \
+    1 * x[2], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[7], \
+    1 * x[9], \
+    1 * x[10], \
+    1 * x[11], \
+    1 * x[12], \
+    1 * x[15], \
+    1 * x[17], \
+    1 * x[22], \
+    1 * x[29] \
+  ];
+center_id = 7;
+center_is_face = false;
+chargeable = [ 4 ];
+#begin Configuration
+shape = [ 0, 1, 2, 3, 4, 7, 9, 10, 11, 12, 15, 17, 22, 29 ];
+faces = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+
+
+
+#begin RuleShape
+rule_name = "c2b";
+var_name = "c2b";
+rule_type = 1;
+# <= 2^7 possibilities:
+keys = [ \
+    1 * x[0], \
+    1 * x[1], \
+    1 * x[2], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[7], \
+    1 * x[10] \
+  ];
+center_id = 1;
+center_is_face = false;
+chargeable = [ 4 ];
+#begin Configuration
+shape = [ 0, 1, 2, 3, 4, 7, 10];
+faces = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "c2b+";
+var_name = "c2bp";
+rule_type = 1;
+# <= 2^13 possibilities:
+keys = [ \
+    1 * x[0], \
+    1 * x[1], \
+    1 * x[2], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[6], \
+    1 * x[7], \
+    1 * x[10], \
+    1 * x[11], \
+    1 * x[15], \
+    1 * x[17], \
+    1 * x[20], \
+    1 * x[22] \
+  ];
+center_id = 1;
+center_is_face = false;
+chargeable = [ 4 ];
+#begin Configuration
+shape = [ 0, 1, 2, 3, 4, 6, 7, 10, 11, 15 17, 20, 22];
+faces = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+
+#begin RuleShape
+rule_name = "nearfaces+";
+var_name = "np";
+rule_type = 3;
+# <= 2^12 possbilities:
+keys = [ \
+    1 * x[0], \
+    1 * x[1], \
+    1 * x[2], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[6], \
+    1 * x[7], \
+    1 * x[8], \
+    1 * x[10], \
+    1 * x[20], \
+    1 * x[22], \
+    1 * x[36] \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 1 ];
+#begin Configuration
+shape = [ 0, 1, 2, 3, 4, 6, 7, 8, 10, 20, 22, 36 ];
+faces = [ 0, 1, 2, 7, 14, 15 ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+
+
+
+#begin RuleShape
+rule_name = "star";
+var_name = "s";
+rule_type = 3;
+# 2^15 possibilities:
+keys = [ \
+    1 * x[0], \
+    1 * x[1], \
+    1 * x[2], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[6], \
+    1 * x[7], \
+    1 * x[8], \
+    1 * x[10], \
+    1 * x[11], \
+    1 * x[15], \
+    1 * x[17], \
+    1 * x[20], \
+    1 * x[22], \
+    1 * x[36] \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 1 ];
+#begin Configuration
+shape = [ 0, 1, 2, 3, 4, 6, 7, 10, 11, 15, 17, 20, 22 ];
+faces = [ 0, 1, 2, 7, 14, 15 ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+
+#begin RuleShape
+rule_name = "star+";
+var_name = "sp";
+rule_type = 3;
+# 2^15 possibilities:
+keys = [ \
+    1 * x[0], \
+    1 * x[1], \
+    1 * x[2], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[6], \
+    1 * x[7], \
+    1 * x[8], \
+    1 * x[10], \
+    1 * x[11], \
+    1 * x[15], \
+    1 * x[17], \
+    1 * x[20], \
+    1 * x[22], \
+    1 * x[36] \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 1 ];
+#begin Configuration
+shape = [ 0, 1, 2, 3, 4, 6, 7, 8, 10, 11, 15, 17, 20, 22, 36 ];
+faces = [ 0, 1, 2, 7, 14, 15 ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+
+#begin RuleShape
+rule_name = "a";
+var_name = "a";
+rule_type = 1;
+# 2^7 * 6^2 * 5 = 23040 possibilities:
+keys = [ \
+    1 * x[0], \
+    1 * x[1], \
+    1 * x[2], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[7], \
+    1 * x[10], \
+    1 * x[8] + 1 * x[6] + 1 * x[5] + 1 * x[15] + 1 * x[29], \
+    1 * x[21] + 1 * x[23] + 1 * x[24] + 1 * x[38] + 1 * x[56], \
+    1 * x[20] + 1 * x[36] + 1 * x[9] + 1 * x[17], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 4 ];
+#begin Configuration
+shape = [ 0, 1, 2, 3, 4, 7, 10, 8, 6, 5, 15, 29, 17, 9, 21, 23, 24, 38, 56, 36, 20 ];
+faces = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+
+#begin RuleShape
+rule_name = "b";
+var_name = "b";
+rule_type = 1;
+# 2^5 * 3 * 5^2 = 2400  possibilities:
+keys = [ \
+    1 * x[7], \
+    1 * x[4], \
+    1 * x[0], \
+    1 * x[3], \
+    1 * x[2] + 1 * x[9], \
+    1 * x[10] + 1 * x[22] + 1 * x[12] + 1 * x[11],\
+    1 * x[1] + 1 * x[15] + 1 * x[29] + 1 * x[17],\
+  ];
+center_id = 7;
+center_is_face = false;
+chargeable = [ 4 ];
+#begin Configuration
+shape = [ 0, 1, 2, 3, 4, 7, 9, 10, 11, 17, 15, 29, 22, 12];
+faces = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+
+
+
+

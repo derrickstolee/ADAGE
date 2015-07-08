@@ -1,0 +1,11 @@
+T SUM NUM_NODES 9322
+T SUM NUM_PRUNES 0
+T SUM SEARCH_TIME 0.431841
+
+Solving normal LP:
+Solving with barrier method...done!
+CPXlpopt ended with lpstat 1!
+Maximum error with w : 0 / 1 == 0.000000
+Maximum error without w : 0 / 1 == 0.000000
+LP is feasible.
+Optimum Value: 0.412500 == 33 / 80.

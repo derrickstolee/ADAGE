@@ -1,0 +1,1372 @@
+#begin RuleShape
+rule_name = "d1r1a";
+var_name = "d1r1a";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[7], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 3 ];
+kernels = [ \
+1 * x[0] + 1 * x[3] >= 2, \
+  ];
+#begin Configuration
+shape = [ 0, 3, 4, 7 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d1r2a";
+var_name = "d1r2a";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[10], \
+    1 * x[2], \
+    1 * x[1], \
+    1 * x[7], \
+    1 * x[9], \
+    1 * x[11], \
+    1 * x[17], \
+    1 * x[12], \
+    1 * x[22], \
+    1 * x[15], \
+    1 * x[29], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 3 ];
+kernels = [ \
+1 * x[0] + 1 * x[3] >= 2, \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] >= 3, \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] >= 4, \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[7] + 1 * x[9] >= 5, \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] >= 6, \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[22] >= 7, \
+  ];
+#begin Configuration
+shape = [ 0, 3, 4, 10, 2, 1, 7, 9, 11, 17, 12, 22, 15, 29 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+
+
+
+#begin RuleShape
+rule_name = "d1face1a";
+var_name = "d1f1a";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[3], \
+    1 * x[7], \
+    1 * x[4], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 3 ];
+kernels = [ \
+1 * x[0] + 1 * x[3] >= 2, \
+  ];
+#begin Configuration
+shape = [ 0, 3, 7, 4 ];
+faces = [ 14, 7 ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [ -1, -1 ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d1face2a";
+var_name = "d1f2a";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[3], \
+    1 * x[7], \
+    1 * x[17], \
+    1 * x[1], \
+    1 * x[15], \
+    1 * x[29], \
+    1 * x[9], \
+    1 * x[11], \
+    1 * x[4], \
+    1 * x[10], \
+    1 * x[2], \
+    1 * x[12], \
+    1 * x[22], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 3 ];
+kernels = [ \
+1 * x[0] + 1 * x[3] >= 2, \
+1 * x[0] + 1 * x[3] + 1 * x[7] + 1 * x[17] >= 3, \
+1 * x[0] + 1 * x[3] + 1 * x[7] + 1 * x[17] + 1 * x[1] + 1 * x[15] >= 4, \
+1 * x[0] + 1 * x[3] + 1 * x[7] + 1 * x[17] + 1 * x[1] + 1 * x[15] + 1 * x[29] + 1 * x[9] >= 5, \
+1 * x[0] + 1 * x[3] + 1 * x[7] + 1 * x[17] + 1 * x[1] + 1 * x[15] + 1 * x[29] + 1 * x[9] + 1 * x[11] + 1 * x[4] >= 6, \
+1 * x[0] + 1 * x[3] + 1 * x[7] + 1 * x[17] + 1 * x[1] + 1 * x[15] + 1 * x[29] + 1 * x[9] + 1 * x[11] + 1 * x[4] + 1 * x[10] + 1 * x[2] >= 7, \
+  ];
+#begin Configuration
+shape = [ 0, 3, 7, 17, 1, 15, 29, 9, 11, 4, 10, 2, 12, 22 ];
+faces = [ 14, 7 ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [ -1, -1 ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d2r1a";
+var_name = "d2r1a";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[9], \
+    1 * x[3], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 9 ];
+kernels = [ \
+1 * x[0] + 1 * x[9] >= 2, \
+  ];
+#begin Configuration
+shape = [ 0, 9, 3 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d2r2a";
+var_name = "d2r2a";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[9], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[7], \
+    1 * x[11], \
+    1 * x[17], \
+    1 * x[12], \
+    1 * x[29], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 9 ];
+kernels = [ \
+1 * x[0] + 1 * x[9] >= 2, \
+1 * x[0] + 1 * x[9] + 1 * x[3] + 1 * x[4] >= 3, \
+1 * x[0] + 1 * x[9] + 1 * x[3] + 1 * x[4] + 1 * x[7] + 1 * x[11] >= 4, \
+1 * x[0] + 1 * x[9] + 1 * x[3] + 1 * x[4] + 1 * x[7] + 1 * x[11] + 1 * x[17] + 1 * x[12] >= 5, \
+  ];
+#begin Configuration
+shape = [ 0, 9, 3, 4, 7, 11, 17, 12, 29 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+
+
+
+#begin RuleShape
+rule_name = "d2face1a";
+var_name = "d2f1a";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[9], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 9 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 9 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d2face2a";
+var_name = "d2f2a";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[9], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 9 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 9 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d2r1b";
+var_name = "d2r1b";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[11], \
+    1 * x[3], \
+    1 * x[4], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 11 ];
+kernels = [ \
+1 * x[0] + 1 * x[11] >= 2, \
+  ];
+#begin Configuration
+shape = [ 0, 11, 3, 4 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d2r2b";
+var_name = "d2r2b";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[11], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[10], \
+    1 * x[7], \
+    1 * x[9], \
+    1 * x[17], \
+    1 * x[12], \
+    1 * x[22], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 11 ];
+kernels = [ \
+1 * x[0] + 1 * x[11] >= 2, \
+1 * x[0] + 1 * x[11] + 1 * x[3] + 1 * x[4] >= 3, \
+1 * x[0] + 1 * x[11] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[7] >= 4, \
+1 * x[0] + 1 * x[11] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[7] + 1 * x[9] + 1 * x[17] >= 5, \
+  ];
+#begin Configuration
+shape = [ 0, 11, 3, 4, 10, 7, 9, 17, 12, 22 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+
+
+#begin RuleShape
+rule_name = "d2face1b";
+var_name = "d2f1b";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[11], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 11 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 11 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d2face2b";
+var_name = "d2f2b";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[11], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 11 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 11 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3r1a";
+var_name = "d3r1a";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[19], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 19 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 19 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3r2a";
+var_name = "d3r2a";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[19], \
+    1 * x[3], \
+    1 * x[9], \
+    1 * x[11], \
+    1 * x[17], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 19 ];
+kernels = [ \
+1 * x[0] + 1 * x[19] >= 2, \
+1 * x[0] + 1 * x[19] + 1 * x[3] + 1 * x[9] >= 3, \
+  ];
+#begin Configuration
+shape = [ 0, 19, 3, 9, 11, 17 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3r3a";
+var_name = "d3r3a";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[19], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[7], \
+    1 * x[9], \
+    1 * x[11], \
+    1 * x[17], \
+    1 * x[12], \
+    1 * x[29], \
+    1 * x[21], \
+    1 * x[31], \
+    1 * x[23], \
+    1 * x[47], \
+    1 * x[24], \
+    1 * x[67], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 19 ];
+kernels = [ \
+1 * x[0] + 1 * x[19] >= 2, \
+1 * x[0] + 1 * x[19] + 1 * x[3] + 1 * x[4] >= 3, \
+1 * x[0] + 1 * x[19] + 1 * x[3] + 1 * x[4] + 1 * x[7] + 1 * x[9] >= 4, \
+1 * x[0] + 1 * x[19] + 1 * x[3] + 1 * x[4] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] >= 5, \
+1 * x[0] + 1 * x[19] + 1 * x[3] + 1 * x[4] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[29] >= 6, \
+1 * x[0] + 1 * x[19] + 1 * x[3] + 1 * x[4] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[29] + 1 * x[21] + 1 * x[31] >= 7, \
+1 * x[0] + 1 * x[19] + 1 * x[3] + 1 * x[4] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[29] + 1 * x[21] + 1 * x[31] + 1 * x[23] + 1 * x[47] >= 8, \
+  ];
+#begin Configuration
+shape = [ 0, 19, 3, 4, 7, 9, 11, 17, 12, 29, 21, 31, 23, 47, 24, 67 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+
+
+#begin RuleShape
+rule_name = "d3face1a";
+var_name = "d3f1a";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[19], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 19 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 19 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3face2a";
+var_name = "d3f2a";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[19], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 19 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 19 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3r1b";
+var_name = "d3r1b";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[21], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 21 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 21 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3r2b";
+var_name = "d3r2b";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[21], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[9], \
+    1 * x[11], \
+    1 * x[17], \
+    1 * x[12], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 21 ];
+kernels = [ \
+1 * x[0] + 1 * x[21] >= 2, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] >= 3, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] + 1 * x[9] + 1 * x[11] >= 4, \
+  ];
+#begin Configuration
+shape = [ 0, 21, 3, 4, 9, 11, 17, 12 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3r3b";
+var_name = "d3r3b";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[21], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[10], \
+    1 * x[7], \
+    1 * x[9], \
+    1 * x[11], \
+    1 * x[17], \
+    1 * x[12], \
+    1 * x[22], \
+    1 * x[29], \
+    1 * x[19], \
+    1 * x[31], \
+    1 * x[23], \
+    1 * x[47], \
+    1 * x[24], \
+    1 * x[38], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 21 ];
+kernels = [ \
+1 * x[0] + 1 * x[21] >= 2, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] >= 3, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[7] >= 4, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[7] + 1 * x[9] + 1 * x[11] >= 5, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] >= 6, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[22] + 1 * x[29] >= 7, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[22] + 1 * x[29] + 1 * x[19] + 1 * x[31] >= 8, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[22] + 1 * x[29] + 1 * x[19] + 1 * x[31] + 1 * x[23] + 1 * x[47] >= 9, \
+  ];
+#begin Configuration
+shape = [ 0, 21, 3, 4, 10, 7, 9, 11, 17, 12, 22, 29, 19, 31, 23, 47, 24, 38 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3face1b";
+var_name = "d3f1b";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[21], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 21 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 21 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3face2b";
+var_name = "d3f2b";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[21], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 21 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 21 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3r1c";
+var_name = "d3r1c";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[31], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 31 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 31 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3r2c";
+var_name = "d3r2c";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[31], \
+    1 * x[3], \
+    1 * x[7], \
+    1 * x[9], \
+    1 * x[11], \
+    1 * x[17], \
+    1 * x[29], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 31 ];
+kernels = [ \
+1 * x[0] + 1 * x[31] >= 2, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[7] >= 3, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[7] + 1 * x[9] + 1 * x[11] >= 4, \
+  ];
+#begin Configuration
+shape = [ 0, 31, 3, 7, 9, 11, 17, 29 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3r3c";
+var_name = "d3r3c";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[31], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[1], \
+    1 * x[7], \
+    1 * x[9], \
+    1 * x[11], \
+    1 * x[17], \
+    1 * x[12], \
+    1 * x[15], \
+    1 * x[29], \
+    1 * x[19], \
+    1 * x[21], \
+    1 * x[23], \
+    1 * x[47], \
+    1 * x[45], \
+    1 * x[67], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 31 ];
+kernels = [ \
+1 * x[0] + 1 * x[31] >= 2, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[4] >= 3, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[4] + 1 * x[1] + 1 * x[7] >= 4, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[4] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] >= 5, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[4] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] >= 6, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[4] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[15] + 1 * x[29] >= 7, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[4] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[15] + 1 * x[29] + 1 * x[19] + 1 * x[21] >= 8, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[4] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[15] + 1 * x[29] + 1 * x[19] + 1 * x[21] + 1 * x[23] + 1 * x[47] >= 9, \
+  ];
+#begin Configuration
+shape = [ 0, 31, 3, 4, 1, 7, 9, 11, 17, 12, 15, 29, 19, 21, 23, 47, 45, 67 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+
+#begin RuleShape
+rule_name = "d3face1c";
+var_name = "d3f1c";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[31], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 31 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 31 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3face2c";
+var_name = "d3f2c";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[31], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 31 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 31 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3r1d";
+var_name = "d3r1d";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[21], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 21 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 21 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3r2d";
+var_name = "d3r2d";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[21], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[9], \
+    1 * x[11], \
+    1 * x[17], \
+    1 * x[12], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 21 ];
+kernels = [ \
+1 * x[0] + 1 * x[21] >= 2, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] >= 3, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] + 1 * x[9] + 1 * x[11] >= 4, \
+  ];
+#begin Configuration
+shape = [ 0, 21, 3, 4, 9, 11, 17, 12 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3r3d";
+var_name = "d3r3d";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[21], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[10], \
+    1 * x[7], \
+    1 * x[9], \
+    1 * x[11], \
+    1 * x[17], \
+    1 * x[12], \
+    1 * x[22], \
+    1 * x[29], \
+    1 * x[19], \
+    1 * x[31], \
+    1 * x[23], \
+    1 * x[47], \
+    1 * x[24], \
+    1 * x[38], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 21 ];
+kernels = [ \
+1 * x[0] + 1 * x[21] >= 2, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] >= 3, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[7] >= 4, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[7] + 1 * x[9] + 1 * x[11] >= 5, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] >= 6, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[22] + 1 * x[29] >= 7, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[22] + 1 * x[29] + 1 * x[19] + 1 * x[31] >= 8, \
+1 * x[0] + 1 * x[21] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[22] + 1 * x[29] + 1 * x[19] + 1 * x[31] + 1 * x[23] + 1 * x[47] >= 9, \
+  ];
+#begin Configuration
+shape = [ 0, 21, 3, 4, 10, 7, 9, 11, 17, 12, 22, 29, 19, 31, 23, 47, 24, 38 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+
+#begin RuleShape
+rule_name = "d3face1d";
+var_name = "d3f1d";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[21], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 21 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 21 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3face2d";
+var_name = "d3f2d";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[21], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 21 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 21 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3r1e";
+var_name = "d3r1e";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[31], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 31 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 31 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3r2e";
+var_name = "d3r2e";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[31], \
+    1 * x[3], \
+    1 * x[7], \
+    1 * x[9], \
+    1 * x[11], \
+    1 * x[17], \
+    1 * x[29], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 31 ];
+kernels = [ \
+1 * x[0] + 1 * x[31] >= 2, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[7] >= 3, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[7] + 1 * x[9] + 1 * x[11] >= 4, \
+  ];
+#begin Configuration
+shape = [ 0, 31, 3, 7, 9, 11, 17, 29 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3r3e";
+var_name = "d3r3e";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[31], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[1], \
+    1 * x[7], \
+    1 * x[9], \
+    1 * x[11], \
+    1 * x[17], \
+    1 * x[12], \
+    1 * x[15], \
+    1 * x[29], \
+    1 * x[19], \
+    1 * x[21], \
+    1 * x[23], \
+    1 * x[47], \
+    1 * x[45], \
+    1 * x[67], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 31 ];
+kernels = [ \
+1 * x[0] + 1 * x[31] >= 2, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[4] >= 3, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[4] + 1 * x[1] + 1 * x[7] >= 4, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[4] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] >= 5, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[4] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] >= 6, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[4] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[15] + 1 * x[29] >= 7, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[4] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[15] + 1 * x[29] + 1 * x[19] + 1 * x[21] >= 8, \
+1 * x[0] + 1 * x[31] + 1 * x[3] + 1 * x[4] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[15] + 1 * x[29] + 1 * x[19] + 1 * x[21] + 1 * x[23] + 1 * x[47] >= 9, \
+  ];
+#begin Configuration
+shape = [ 0, 31, 3, 4, 1, 7, 9, 11, 17, 12, 15, 29, 19, 21, 23, 47, 45, 67 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3face1e";
+var_name = "d3f1e";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[31], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 31 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 31 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "d3face2e";
+var_name = "d3f2e";
+rule_type = 1;
+keys = [ \
+    1 * x[0], \
+    1 * x[31], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 31 ];
+kernels = [ \
+  ];
+#begin Configuration
+shape = [ 0, 31 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "v1a";
+var_name = "v1a";
+rule_type = 3;
+keys = [ \
+    1 * x[0], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[10], \
+    1 * x[2], \
+    1 * x[1], \
+    1 * x[7], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 14 ];
+kernels = [ \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[7] >= 7, \
+  ];
+#begin Configuration
+shape = [ 0, 3, 4, 10, 2, 1, 7 ];
+faces = [ 14 ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [ -1 ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "v2a";
+var_name = "v2a";
+rule_type = 3;
+keys = [ \
+    1 * x[0], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[10], \
+    1 * x[2], \
+    1 * x[1], \
+    1 * x[7], \
+    1 * x[9], \
+    1 * x[11], \
+    1 * x[17], \
+    1 * x[12], \
+    1 * x[22], \
+    1 * x[36], \
+    1 * x[20], \
+    1 * x[8], \
+    1 * x[6], \
+    1 * x[5], \
+    1 * x[15], \
+    1 * x[29], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 14 ];
+kernels = [ \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[7] >= 4, \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] >= 5, \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[12]  >= 6, \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[12] + 1 * x[22] + 1 * x[36] + 1 * x[20] >= 7, \
+  ];
+#begin Configuration
+shape = [ 0, 3, 4, 10, 2, 1, 7, 9, 11, 17, 12, 22, 36, 20, 8, 6, 5, 15, 29 ];
+faces = [ 14 ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [ -1 ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "v3a";
+var_name = "v3a";
+rule_type = 3;
+keys = [ \
+    1 * x[0], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[10], \
+    1 * x[2], \
+    1 * x[1], \
+    1 * x[7], \
+    1 * x[9], \
+    1 * x[11], \
+    1 * x[17], \
+    1 * x[12], \
+    1 * x[22], \
+    1 * x[36], \
+    1 * x[20], \
+    1 * x[8], \
+    1 * x[6], \
+    1 * x[5], \
+    1 * x[15], \
+    1 * x[29], \
+    1 * x[19], \
+    1 * x[21], \
+    1 * x[31], \
+    1 * x[23], \
+    1 * x[47], \
+    1 * x[24], \
+    1 * x[38], \
+    1 * x[56], \
+    1 * x[78], \
+    1 * x[54], \
+    1 * x[34], \
+    1 * x[18], \
+    1 * x[16], \
+    1 * x[14], \
+    1 * x[13], \
+    1 * x[27], \
+    1 * x[45], \
+    1 * x[67], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 14 ];
+kernels = [ \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[7] >= 7, \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[7] >= 4, \
+ + 1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[22] + 1 * x[36] + 1 * x[20] + 1 * x[8] + 1 * x[6] + 1 * x[5] + 1 * x[15] + 1 * x[29] >= 10, \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[7] + 1 * x[9] + 1 * x[11] + 1 * x[17] + 1 * x[12] + 1 * x[22] + 1 * x[36] + 1 * x[20] + 1 * x[8] + 1 * x[6] + 1 * x[5] + 1 * x[15] + 1 * x[29] >= 10, \
+  ];
+#begin Configuration
+shape = [ 0, 3, 4, 10, 2, 1, 7, 9, 11, 17, 12, 22, 36, 20, 8, 6, 5, 15, 29, 19, 21, 31, 23, 47, 24, 38, 56, 78, 54, 34, 18, 16, 14, 13, 27, 45, 67 ];
+faces = [ 14 ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [ -1 ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "face1a";
+var_name = "f1a";
+rule_type = 3;
+keys = [ \
+    1 * x[0], \
+    1 * x[7], \
+    1 * x[3], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 14 ];
+kernels = [ \
+1 * x[0] + 1 * x[7] >= 2, \
+  ];
+#begin Configuration
+shape = [ 0, 7, 3 ];
+faces = [ 14 ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [ -1 ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "face2a";
+var_name = "f2a";
+rule_type = 3;
+keys = [ \
+    1 * x[0], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[10], \
+    1 * x[2], \
+    1 * x[1], \
+    1 * x[7], \
+    1 * x[17], \
+    1 * x[15], \
+    1 * x[29], \
+    1 * x[9], \
+    1 * x[11], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 14 ];
+kernels = [ \
+1 * x[0] + 1 * x[3] >= 2, \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] >= 3, \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] >= 4, \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[7] + 1 * x[17] >= 5, \
+1 * x[0] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[7] + 1 * x[17] + 1 * x[15] + 1 * x[29] >= 6, \
+  ];
+#begin Configuration
+shape = [ 0, 3, 4, 10, 2, 1, 7, 17, 15, 29, 9, 11 ];
+faces = [ 14 ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [ -1 ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "nearbya";
+var_name = "na";
+rule_type = 3;
+keys = [ \
+    1 * x[0], \
+    1 * x[7], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[10], \
+    1 * x[2], \
+    1 * x[1], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 14 ];
+kernels = [ \
+1 * x[0] + 1 * x[7] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] >= 4, \
+  ];
+#begin Configuration
+shape = [ 0, 7, 3, 4, 10, 2, 1 ];
+faces = [ 14, 7, 0, 1, 2, 15 ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [ -1, -1, -1, -1, -1, -1 ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "nearbyplusa";
+var_name = "npa";
+rule_type = 3;
+keys = [ \
+    1 * x[0], \
+    1 * x[7], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[10], \
+    1 * x[2], \
+    1 * x[1], \
+    1 * x[17], \
+    1 * x[15], \
+    1 * x[29], \
+    1 * x[9], \
+    1 * x[11], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 14 ];
+kernels = [ \
+1 * x[0] + 1 * x[7] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] >= 4, \
+1 * x[0] + 1 * x[7] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[17] >= 5, \
+1 * x[0] + 1 * x[7] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[17] + 1 * x[15] + 1 * x[29] >= 6, \
+  ];
+#begin Configuration
+shape = [ 0, 7, 3, 4, 10, 2, 1, 17, 15, 29, 9, 11 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+
+#begin RuleShape
+rule_name = "nearbyplus2a";
+var_name = "np2a";
+rule_type = 3;
+keys = [ \
+    1 * x[0], \
+    1 * x[7], \
+    1 * x[3], \
+    1 * x[4], \
+    1 * x[10], \
+    1 * x[2], \
+    1 * x[1], \
+    1 * x[17], \
+    1 * x[15], \
+    1 * x[29], \
+    1 * x[9], \
+    1 * x[11], \
+  ];
+center_id = 0;
+center_is_face = false;
+chargeable = [ 14 ];
+kernels = [ \
+1 * x[0] + 1 * x[7] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] >= 4, \
+1 * x[0] + 1 * x[7] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[17] >= 5, \
+1 * x[0] + 1 * x[7] + 1 * x[3] + 1 * x[4] + 1 * x[10] + 1 * x[2] + 1 * x[1] + 1 * x[17] + 1 * x[15] + 1 * x[29] >= 6, \
+  ];
+#begin Configuration
+shape = [ 0, 7, 3, 4, 10, 2, 1, 17, 15, 29, 9, 11 ];
+faces = [  ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [  ];
+center_vertex = 0;
+#end Configuration
+#end RuleShape
+

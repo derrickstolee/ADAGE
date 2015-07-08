@@ -1,0 +1,7 @@
+#begin Configuration
+shape = [ 0, 4, 2, 1 ];
+faces = [ 0, 6, 2, 8, 4, 1 ];
+elements = [  ];
+nonelements = [  ];
+face_sizes = [ -1, -1, -1, -1, -1, -1 ];
+#end Configuration

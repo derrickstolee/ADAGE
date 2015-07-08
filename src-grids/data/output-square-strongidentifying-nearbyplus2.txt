@@ -1,0 +1,16 @@
+...10000 constraints.
+...20000 constraints.
+...30000 constraints.
+...40000 constraints.
+...50000 constraints.
+T SUM NUM_NODES 472418
+T SUM NUM_PRUNES 0
+T SUM SEARCH_TIME 48.321402
+
+Solving normal LP:
+Solving with barrier method...done!
+CPXlpopt ended with lpstat 1!
+Maximum error with w : 0 / 1 == 0.000000
+Maximum error without w : 0 / 1 == 0.000000
+LP is feasible.
+Optimum Value: 0.388889 == 7 / 18.
