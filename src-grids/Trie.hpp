@@ -117,8 +117,6 @@ public:
 	 */
 	bool insert(char* key, Type value = 0)
 	{
-		printf("[Trie::insert]\n");
-
 		if ( this->root == 0 )
 		{
 			this->root = new TrieNode<Type>();
@@ -126,8 +124,6 @@ public:
 			this->root->value = value;
 
 			this->size = 1;
-
-			fprintf(stdout, "[Trie::insert] Inserting string %s at root!\n", key);
 			return true;
 		}
 
@@ -139,7 +135,6 @@ public:
 		{
 			if ( strcmp(curnode->key_value, key) == 0 )
 			{
-				printf("[Trie::insert] Trying to insert %s when we already have it!\n", key);
 				return false;
 			}
 
@@ -155,7 +150,6 @@ public:
 				curnode->children[key[depth]-MIN_CHILD_INDEX] = nextnode;
 				(this->size)++;
 
-				fprintf(stdout, "[Trie::insert] Inserting string %s at depth %d\n", key, depth);
 				return true;
 			}
 
@@ -164,7 +158,6 @@ public:
 			depth++;
 		}
 
-		fprintf(stdout, "[Trie::insert] Trying to insert %s but ran out of depth?\n", key);
 		return false;
 	}
 
@@ -175,8 +168,6 @@ public:
 
 	bool contains(char* key)
 	{
-		printf("[Trie::contains]\n");
-
 		if ( key == 0 )
 		{
 			return false;
