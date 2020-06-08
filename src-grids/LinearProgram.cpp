@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-using namespace adage;
+using namespace adage::grids;
 
 LinearProgram::LinearProgram()
 {

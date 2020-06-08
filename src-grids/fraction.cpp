@@ -160,7 +160,7 @@ void fraction::simplify()
 	}
 }
 
-fraction fraction::operator+(fraction f) throw (FractionException)
+fraction fraction::operator+(fraction f)
 {
 	fraction sum;
 
@@ -202,7 +202,7 @@ fraction fraction::operator-(fraction f)
 	return sum;
 }
 
-fraction fraction::operator/(fraction f) throw (UnderflowException)
+fraction fraction::operator/(fraction f)
 {
 	fraction quotient;
 
@@ -214,7 +214,7 @@ fraction fraction::operator/(fraction f) throw (UnderflowException)
 	return quotient;
 }
 
-fraction fraction::operator*(fraction f) throw (OverflowException)
+fraction fraction::operator*(fraction f)
 {
 	fraction product;
 

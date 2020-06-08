@@ -116,7 +116,7 @@ public:
 	 * returns false if already contains!
 	 */
 	bool insert(char* key, Type value = 0)
-	{	
+	{
 		printf("[Trie::insert]\n");
 
 		if ( this->root == 0 )
@@ -126,14 +126,14 @@ public:
 			this->root->value = value;
 
 			this->size = 1;
-			
+
 			fprintf(stdout, "[Trie::insert] Inserting string %s at root!\n", key);
 			return true;
 		}
 
 		TrieNode<Type>* curnode = this->root;
 		int depth = 0;
-		int length = strlen(key); 
+		int length = strlen(key);
 
 		while ( depth <= length )
 		{
@@ -148,7 +148,7 @@ public:
 			if ( nextnode == 0 )
 			{
 				nextnode = new TrieNode<Type>();
-				
+
 				nextnode->key_value = key;
 				nextnode->value = value;
 
@@ -218,7 +218,7 @@ public:
 		return false;
 	}
 
-	Type getValue(char* key)
+	Type getValue(const char* key)
 	{
 		if ( this->root == 0 || key == 0 )
 		{

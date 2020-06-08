@@ -4,20 +4,20 @@
  *  Created on: Apr 17, 2014
  *      Author: stolee
  */
- 
+
 #include "LinearConstraint.hpp"
- 
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <queue>
- 
+
 #include "macros.hpp"
- 
+
 using namespace adage;
- 
- 
- 
+
+
+
 Monomial::Monomial()
 {
     this->coefficient = 0;
@@ -27,8 +27,8 @@ Monomial::Monomial()
     this->next = 0;
     this->prev = 0;
 }
- 
- 
+
+
 Monomial::Monomial(int coefficient, char* varname, int num_keys, int* keys)
 {
     this->coefficient = coefficient;
@@ -46,7 +46,7 @@ Monomial::Monomial(int coefficient, char* varname, int num_keys, int* keys)
     this->next = 0;
     this->prev = 0;
 }
- 
+
 Monomial::~Monomial()
 {
     if ( this->next != 0 )
@@ -54,14 +54,14 @@ Monomial::~Monomial()
         delete this->next;
         this->next = 0;
     }
- 
+
     this->prev = 0;
 
     FREE_ARRAY(this->varname);
     FREE_ARRAY(this->keys);
     this->num_keys = 0;
 }
- 
+
 int Monomial::getNumKeys()
 {
     return this->num_keys;
@@ -83,7 +83,7 @@ Monomial* Monomial::insert(int coefficient, char* varname, int num_keys, int* ke
         // these conditions should really be the same thing!
         insert_in_middle = true;
     }
-    else if ( strcmp(this->varname, varname) == 0 ) 
+    else if ( strcmp(this->varname, varname) == 0 )
     {
         // correct variable, what about the key?
         bool equal = true;
@@ -105,7 +105,7 @@ Monomial* Monomial::insert(int coefficient, char* varname, int num_keys, int* ke
                 break;
             }
         }
- 
+
         if ( equal )
         {
             // modify this coefficient!
@@ -127,29 +127,29 @@ Monomial* Monomial::insert(int coefficient, char* varname, int num_keys, int* ke
         // this variable belongs BEFORE me!
         insert_in_middle = true;
     }
- 
+
     if ( insert_in_middle )
     {
         // ok, we must add it here!
-        this->prev = new Monomial(); 
- 
+        this->prev = new Monomial();
+
         this->prev->varname = (char*)malloc(strlen(varname)+1);
         this->prev->num_keys = num_keys;
         this->prev->keys = (int*)malloc(num_keys * sizeof(int));
-         
+
         strcpy(this->prev->varname, varname);
- 
+
         for ( int i = 0; i < num_keys; i++ )
         {
             this->prev->keys[i] = keys[i];
         }
- 
+
         this->prev->coefficient = coefficient;
         this->prev->next = this;
- 
+
         return this->prev;
     }
- 
+
     return this;
 }
 
@@ -160,14 +160,14 @@ char* Monomial::getBasicString()
         // I should be an empty monomial, so let's be an empty string!
         return 0;
     }
-    
+
     int origl = strlen(this->varname) + 10 + 10 * this->num_keys;
 
     char* news = (char*)malloc( origl );
- 
+
     news[0] = 0;
     sprintf(news, "%s(", this->varname);
- 
+
     for ( int i = 0; i < this->num_keys; i++ )
     {
         if ( this->keys[i] >= 0 )
@@ -179,17 +179,17 @@ char* Monomial::getBasicString()
             // not in the kernel!
             sprintf(news + strlen(news), "_");
         }
- 
+
         if ( i < this->num_keys - 1 )
         {
-            strcat(news, ",");      
-        }   
+            strcat(news, ",");
+        }
     }
     strcat(news, ")");
 
     return news;
 }
- 
+
 char* Monomial::getString()
 {
     if ( this->varname == 0 || this->next == 0 )
@@ -197,37 +197,37 @@ char* Monomial::getString()
         // I should be an empty monomial, so let's be an empty string!
         return 0;
     }
- 
+
     if ( this->coefficient == 0 )
     {
         return this->next->getString();
     }
-     
+
     int origl = strlen(this->varname) + 10 + 10 * this->num_keys;
 
     char* basic = this->getBasicString();
     char* news = (char*)malloc( origl );
- 
+
     news[0] = 0;
     sprintf(news, "%d * %s", this->coefficient, basic);
 
     free(basic);
- 
+
     char* s = this->next->getString();
- 
+
     if ( s != 0 )
     {
         int newsl = strlen(news);
         int sl = strlen(s);
- 
+
         news = (char*)realloc(news, newsl + sl + 15);
-         
+
         strcat(news, " + ");
-        strcat(news, s);    
- 
+        strcat(news, s);
+
         free(s);
     }
- 
+
     return news;
 }
 
@@ -245,8 +245,8 @@ Monomial* Monomial::getNext()
 {
 	return this->next;
 }
- 
- 
+
+
 LinearConstraint::LinearConstraint(int w_coeff, int rhs, int inequality_mode)
 {
     this->w_coeff = w_coeff;
@@ -255,13 +255,13 @@ LinearConstraint::LinearConstraint(int w_coeff, int rhs, int inequality_mode)
     this->monomial_list = new Monomial();
     this->num_monomials = 0;
 }
- 
+
 LinearConstraint::~LinearConstraint()
 {
     delete this->monomial_list;
     this->monomial_list = 0;
 }
- 
+
 void LinearConstraint::insertMonomial(int coefficient, char* varname, int num_keys, int* keys)
 {
     this->monomial_list = this->monomial_list->insert(coefficient, varname, num_keys, keys);
@@ -275,18 +275,18 @@ void LinearConstraint::insertMonomial(int coefficient, char* varname, int num_ke
         m = m->getNext();
     }
 }
- 
+
 char* LinearConstraint::getString()
 {
     char* costr = this->monomial_list->getString();
- 
+
     if ( costr == 0 )
     {
         return 0;
     }
- 
+
     costr = (char*)realloc(costr, strlen(costr) + 30);
- 
+
     if ( this->w_coeff > 0 )
     {
         sprintf(costr + strlen(costr), " + %d * w", this->w_coeff);
@@ -295,7 +295,7 @@ char* LinearConstraint::getString()
     {
         sprintf(costr + strlen(costr), " - %d * w", -this->w_coeff);
     }
- 
+
     switch( this->inequality_mode )
     {
         case INEQUALITY_GEQ:
@@ -308,10 +308,10 @@ char* LinearConstraint::getString()
         strcat(costr, " <= ");
         break;
     }
- 
- 
+
+
     sprintf(costr + strlen(costr), "%d", this->rhs);
- 
+
     return costr;
 }
 

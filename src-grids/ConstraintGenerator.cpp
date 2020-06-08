@@ -5,9 +5,10 @@
  *      Author: stolee
  */
 
-#include "ConstraintGenerator.hpp"
 #include "RuleShape.hpp"
 #include "LinearConstraint.hpp"
+#include "LinearProgram.hpp"
+#include "ConstraintGenerator.hpp"
 
 #include <string.h>
 #include <stdio.h>
@@ -115,7 +116,7 @@ void ConstraintGenerator::determineVariations()
     for ( int ii = 0; ii < cur_base->getNumVerticesInShape(); ii++ )
     {
         this->center_id = cur_base->getVertexFromShape(ii);
-            
+
         for ( int i = 0; i < this->num_shapes; i++ )
         {
             Configuration* c = this->rule_shapes[i]->getShape();
@@ -140,7 +141,7 @@ void ConstraintGenerator::determineVariations()
                 }
             }
             else if ( this->rule_shapes[i]->getType() == VARIABLE_TYPE_V2V )
-            {   
+            {
                 for ( int j = 0; j < this->grid->getVertexDegree(this->center_id); j++ )
                 {
                     int u1 = this->center_id;
@@ -181,10 +182,10 @@ void ConstraintGenerator::determineVariations()
                 }
             }
             else if ( this->rule_shapes[i]->getType() == VARIABLE_TYPE_V2F )
-            {   
+            {
                 int u1 = this->center_id;
-                int g2 = this->grid->neighborVF(this->center_id, 0);
-                
+		this->grid->neighborVF(this->center_id, 0);
+
                 for (int j = 0; j < this->rule_shapes[i]->getNumChargeable(); j++ )
                 {
                     // for every way to pull...
@@ -291,10 +292,10 @@ void ConstraintGenerator::determineVariations()
                     // this->rule_shapes[i]->print();
                     // printf("Warning! Variable type %d not implemented!\n", this->rule_shapes[i]->getType());
                     // this->rule_shapes[i]->print();
-                } 
+                }
             }
         }
-    }   
+    }
 
     //  this->full_conf->print();
 
@@ -347,12 +348,12 @@ void ConstraintGenerator::addVariation(RuleShape* variation)
             }
         }
     }
-    
+
     this->shape_variations[(this->num_variations)++] = variation;
 
     for ( int i = 0;i  < variation->getShape()->getNumVerticesInShape(); i++ )
     {
-        int v = variation->getShape()->getVertexFromShape(i); 
+        int v = variation->getShape()->getVertexFromShape(i);
 
         if ( this->full_conf->isVertexInShape(v) == false )
         {
@@ -388,7 +389,7 @@ void ConstraintGenerator::addVariation(RuleShape* variation)
 
 /**
  * add the current constraint, as we have exactly determined every rule!
- * 
+ *
  */
 bool ConstraintGenerator::addConstraint()
 {
@@ -412,9 +413,8 @@ bool ConstraintGenerator::addConstraint()
 
     LinearConstraint* constraint = new LinearConstraint(w_coeff, rhs, inequality_mode);
 
-    bool fail = false;
     for ( int i = 0; i < this->num_variations; i++ )
-    {  
+    {
         this->shape_variations[i]->modifyCoefficients(this->conf, constraint);
     }
 
@@ -522,7 +522,7 @@ void ConstraintGenerator::clear()
     while ( this->stack.size() > 0 )
     {
     	this->rollback();
-    	
+
     	delete this->stack.back();
     	this->stack.pop_back();
     }
@@ -550,7 +550,7 @@ void ConstraintGenerator::rollback()
  * @return the label for the new node. -1 if none.
  */
 LONG_T ConstraintGenerator::pushNext()
-{    
+{
     SearchNode* parent = 0;
     LONG_T next_child = 0;
 
@@ -665,7 +665,7 @@ int ConstraintGenerator::prune()
         // printf("Warning: The following configuration gave a false return to propagate(): \n");
         // this->conf->print();
         return 1;
-    }   
+    }
 
     return 0;
 }
@@ -673,7 +673,7 @@ int ConstraintGenerator::prune()
 /**
  * isSolution -- Perform a check to see if a solution exists
  * 		at this point.
- *  
+ *
  * @return 0 if no solution is found, 1 if a solution is found.
  */
 int ConstraintGenerator::isSolution()

@@ -14,6 +14,7 @@
 #include "Rule.hpp"
 #include "RuleShape.hpp"
 #include "SearchManager.hpp"
+#include "LinearConstraint.hpp"
 #include "LinearProgram.hpp"
 #include <stack>
 

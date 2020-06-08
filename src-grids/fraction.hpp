@@ -49,10 +49,10 @@ public:
 
 	void simplify();
 
-	fraction operator+(fraction f) throw (FractionException);
+	fraction operator+(fraction f);
 	fraction operator-(fraction f);
-	fraction operator/(fraction f) throw (UnderflowException);
-	fraction operator*(fraction f) throw (OverflowException);
+	fraction operator/(fraction f);
+	fraction operator*(fraction f);
 
 	bool operator>(fraction f);
 	bool operator>=(fraction f);

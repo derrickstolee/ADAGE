@@ -3,7 +3,7 @@
  *
  * A linear constraint is a list of monomials and their coefficients.
  *
- * The monomials are sorted in a priority queue and modified by 
+ * The monomials are sorted in a priority queue and modified by
  * a RuleShape in order to add or remove variables from the list.
  */
 #ifndef LINEARCONSTRAINT_HPP__
@@ -19,7 +19,7 @@ namespace adage {
  * A monomial is a combination of a coefficient times a variable
  * corresponding to some kernelization.
  *
- * If two monomials have the same varname, then they come from the 
+ * If two monomials have the same varname, then they come from the
  * same rule and they have the same number of keys.
  *
  * The kernelization is modeled by the keys, in order.
@@ -32,7 +32,7 @@ protected:
 	int coefficient;
 	char* varname;
 	int num_keys;
-	int* keys; 
+	int* keys;
 	Monomial* next;
 	Monomial* prev;
 
@@ -54,7 +54,7 @@ public:
 	int* getKeys();
 };
 
-class LinearConstraint 
+class LinearConstraint
 {
 protected:
 	Monomial* monomial_list;
@@ -79,9 +79,6 @@ public:
 	int getWCoeff();
 };
 
-		
 }
 
-
-
-#endif 
+#endif

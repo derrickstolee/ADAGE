@@ -6,11 +6,8 @@
 # This uses GLPK for the linear programming portion.
 #
 
-
-
-
-OBJECTS =ADAGELinearProgram.o		\
-			constraintset.o	
+OBJECTS = LinearProgram.o		\
+	  constraintset.o
 
 
 CC 	= g++
@@ -18,10 +15,10 @@ CXX = g++
 
 OPT = -O0 -g
 # -O7
-DEBUG =  
-# -g 
-# -static 
-WARNINGS = -Wall 
+DEBUG =
+# -g
+# -static
+WARNINGS = -Wall
 DEFINES = -D GLPK
 
 CFLAGS 		= $(OPT) $(DEBUG) $(WARNINGS) $(DEFINES)
@@ -46,17 +43,17 @@ NAUTYOBJS     	= $(NAUTYDIR)/nauty.o 			\
 				  $(NAUTYDIR)/naugraph.o
 
 TREESEARCHOBJS	= $(TREESEARCHDIR)/SearchManager.o
- 
+
 #UTILSOBJS	= 	$(UTILSDIR)/Set.o				\
 				$(UTILSDIR)/translation.o				\
-				$(UTILSDIR)/TreeSet.o				 
-				  
+				$(UTILSDIR)/TreeSet.o
+
 
 
 LIBOBJS			= $(TREESEARCHOBJS) $(CLIQUEROBJS) $(UTILSOBJS) $(NAUTYOBJS)
-			
-						
-.SUFFIXES: .c .cpp .o .obj .exe 
+
+
+.SUFFIXES: .c .cpp .o .obj .exe
 
 all: $(OBJECTS) $(TESTS) $(TARGETS)
 
@@ -64,33 +61,31 @@ all: $(OBJECTS) $(TESTS) $(TARGETS)
 # The default object compiler
 .c.o: $<
 	$(CC) $(CFLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
-        
+
 .cpp.o: $<
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
-        
-.cpp.exe: $< $(OBJECTS) 
+
+.cpp.exe: $< $(OBJECTS)
 	$(CXX) $(LFLAGS)			\
         	$(INCLUDES)	$(DEBUG)			\
         	$(LIBOBJS) $(LIBS)				\
         	`cat $@.objs`           		\
             $< -o $@
-	cp $@ ../bin/
-        
+
 .c.exe: $< $(COBJECTS)
 	$(CC) 	$(LFLAGS)			    \
         	$(INCLUDES)				\
         	$(NAUTYOBJS)  $(COBJECTS) $(LIBS)		\
             $< -o $@
-	cp $@ ../bin/
-        
+
 clean:
-	rm $(OBJECTS) $(TARGETS) $(TESTS)
-	
+	rm -f $(OBJECTS) $(TARGETS) $(TESTS)
+
 cleanexe:
-	rm $(TARGETS)
+	rm -f $(TARGETS)
 
 cleantest:
-	rm $(TESTS)
+	rm -f $(TESTS)
 
 clexe:
-	rm $(TARGETS)
+	rm -f $(TARGETS)

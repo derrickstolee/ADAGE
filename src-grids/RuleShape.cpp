@@ -2,11 +2,11 @@
  * RuleShape.cpp
  *
  * A RuleShape contains a Configuration that describes how a rule could
- * pull or push charge. It is not directly associated with a specific rule, 
+ * pull or push charge. It is not directly associated with a specific rule,
  * but instead is a template for a rule.
- * 
+ *
  * When generating constraints, this rule determines which variable should be used
- * specifically between two chargeable objects, depending on the situation of the 
+ * specifically between two chargeable objects, depending on the situation of the
  * given Configuration.
  */
 
@@ -45,7 +45,7 @@ RuleShape::RuleShape()
 	this->size_chargeable = 12;
 	this->num_chargeable= 0;
 	this->chargeable = (int*)malloc(this->size_chargeable * sizeof(int));
-		
+
 	this->num_kernel_keys = 0;
 	this->num_kernel_vertices = 0;
 	this->kernel_vertex_indices = 0;
@@ -73,14 +73,14 @@ RuleShape::RuleShape(RuleShape* shape, int* fperm, int* vperm, int constraint_ce
 
 	this->shape_conf = shape->shape_conf->duplicate(fperm, vperm);
 	this->rule_type = shape->rule_type;
-	
+
 	this->center_is_face = shape->center_is_face;
 
 	if ( shape->center_is_face )
 	{
 		this->center_id = fperm[shape->center_id];
 	}
-	else	
+	else
 	{
 		this->center_id = vperm[shape->center_id];
 	}
@@ -297,7 +297,6 @@ void RuleShape::modifyCoefficients(Configuration* conf, LinearConstraint* constr
 
 	for ( int i = 0; i < this->num_kernels; i++ )
 	{
-		bool kernel_active = false;
 		int kernel_value = 0;
 		for ( int j = 0; j < this->kernel_size[i]; j++ )
 		{
@@ -309,21 +308,18 @@ void RuleShape::modifyCoefficients(Configuration* conf, LinearConstraint* constr
 
 		if ( this->kernel_bound_type[i] == GEQ && kernel_value >= this->kernel_bound[i] )
 		{
-			kernel_active = true;
 			active_kernel = i;
 			break;
 		}
 
 		if ( this->kernel_bound_type[i] == LEQ && kernel_value <= this->kernel_bound[i] )
 		{
-			kernel_active = true;
 			active_kernel = i;
 			break;
 		}
 
 		if ( this->kernel_bound_type[i] == EQ && kernel_value == this->kernel_bound[i] )
 		{
-			kernel_active = true;
 			active_kernel = i;
 			break;
 		}
@@ -389,7 +385,7 @@ void RuleShape::modifyCoefficients(Configuration* conf, LinearConstraint* constr
 			coef = 1;
 
 			constraint->insertMonomial(coef, this->var_name, num_keys, keys);
-		}	
+		}
 	}
 
 	free(keys);
@@ -409,7 +405,6 @@ void RuleShape::getVariableName(Configuration* conf, int chargeable, char*& name
 
 	for ( int i = 0; i < this->num_kernels; i++ )
 	{
-		bool kernel_active = false;
 		int kernel_value = 0;
 		for ( int j = 0; j < this->kernel_size[i]; j++ )
 		{
@@ -421,21 +416,18 @@ void RuleShape::getVariableName(Configuration* conf, int chargeable, char*& name
 
 		if ( this->kernel_bound_type[i] == GEQ && kernel_value >= this->kernel_bound[i] )
 		{
-			kernel_active = true;
 			active_kernel = i;
 			break;
 		}
 
 		if ( this->kernel_bound_type[i] == LEQ && kernel_value <= this->kernel_bound[i] )
 		{
-			kernel_active = true;
 			active_kernel = i;
 			break;
 		}
 
 		if ( this->kernel_bound_type[i] == EQ && kernel_value == this->kernel_bound[i] )
 		{
-			kernel_active = true;
 			active_kernel = i;
 			break;
 		}
@@ -480,10 +472,10 @@ void RuleShape::getVariableName(Configuration* conf, int chargeable, char*& name
 	{
 		keys[this->num_kernel_keys] = chargeable;
 	}
-	
+
 	Monomial* mon = new Monomial(1, this->var_name, num_keys, keys);
 
-	char* tname = mon->getBasicString();
+	char* tname = mon->getString();
 	int t_len = strlen(tname);
 
 	if ( name_len < t_len )
@@ -684,7 +676,7 @@ RuleShape* RuleShape::read(Grid* grid, FILE* file)
 
 				next = strtok(0, " ,");
 			}
-			
+
 			free(charge);
 
 			buffer = 0;
@@ -746,7 +738,7 @@ RuleShape* RuleShape::read(Grid* grid, FILE* file)
 			}
 		}
 		else if ( strcmp(buffer, "kernels = [ \\\n") == 0 )
-		{ 
+		{
 			shape->size_kernels = 50;
 			shape->num_kernels = 0;
 
@@ -790,17 +782,17 @@ RuleShape* RuleShape::read(Grid* grid, FILE* file)
 						{
 							shape->kernel_bound_type[shape->num_kernels] = GEQ;
 							number_start = strstr(next, ">=") + 3;
-						}	
+						}
 						if ( strstr(next, "<=") != 0 )
 						{
 							shape->kernel_bound_type[shape->num_kernels] = LEQ;
 							number_start = strstr(next, "<=") + 3;
-						}	
+						}
 						if ( strstr(next, "==") != 0 )
 						{
 							shape->kernel_bound_type[shape->num_kernels] = EQ;
 							number_start = strstr(next, "==") + 3;
-						}	
+						}
 
 						if ( number_start > 0 )
 						{

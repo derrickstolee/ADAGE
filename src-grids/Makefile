@@ -1,7 +1,7 @@
 #
 # Makefile for ADAGE project, src-grids/ folder.
 #
-# This has no linear programming portion, as that is compiled 
+# This has no linear programming portion, as that is compiled
 # specific to which LP library is used.
 #
 
@@ -12,69 +12,71 @@ TESTS = test_Configuration.exe 	\
 			test_SquareGrid.exe \
 			test_TriangularGrid.exe
 
-TARGETS = 	grid-constraints.exe 
+TARGETS = 	grid-constraints.exe
 
 OBJECTS = Configuration.o 						\
 				ConstraintGenerator.o				\
 				Grid.o										\
 				HexagonalGrid.o						\
+				HexagonalGridNoRotate.o						\
 				IdentifyingCodeConfiguration.o	\
 				LinearConstraint.o 		\
+				LinearProgram.o 		\
 				RuleShape.o 						\
 				SquareGrid.o   	\
 				TriangularGrid.o \
 				fraction.o \
-				Trie.o \
-				SearchManager.o 
+				SearchManager.o
 
 CC 	= gcc
 CXX = g++
 
-OPT = -O3 
-DEBUG =  
+INCLUDES = -I./
+INCLUDES +=  -I../../Utilities/src
+
+OPT = -O3
+DEBUG =
 WARNINGS = -Wall
 
 CFLAGS 		= $(OPT) $(DEBUG) $(WARNINGS) $(DEFINES)
-CXXFLAGS 	= $(OPT) $(DEBUG) $(WARNINGS) $(DEFINES) 
-LFLAGS 		= $(OPT) $(DEBUG) $(WARNINGS) $(DEFINES) 
-			
-.SUFFIXES: .c .cpp .o .obj .exe 
+CXXFLAGS 	= $(OPT) $(DEBUG) $(WARNINGS) $(DEFINES)
+LFLAGS 		= $(OPT) $(DEBUG) $(WARNINGS) $(DEFINES)
+
+.SUFFIXES: .c .cpp .o .obj .exe
 
 all: $(OBJECTS) $(TESTS) $(TARGETS)
 
 # The default object compiler
 .c.o: $<
 	$(CC) $(CFLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
-        
+
 .cpp.o: $<
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
-        
-.cpp.exe: $< $(OBJECTS) 
+
+.cpp.exe: $< $(OBJECTS)
 	$(CXX) $(LFLAGS)						\
         	$(INCLUDES)	$(DEBUG)			\
         	$(LIBOBJS) $(LIBS)					\
         $(OBJECTS)				    	   			\
             $< -o $@
-	cp $@ ../bin/
-        
+
 .c.exe: $< $(COBJECTS)
 	$(CC) 	$(LFLAGS)	$(DEBUG)		    						\
         	$(INCLUDES)										\
         	$(NAUTYOBJS)  $(COBJECTS) $(LIBS)		\
             $< -o $@
-	cp $@ ../bin/
-        
+
 clean:
-	-@rm $(OBJECTS) $(TARGETS) $(TESTS)
-	
+	rm -f $(OBJECTS) $(TARGETS) $(TESTS)
+
 cleanexe:
-	-@rm $(TARGETS)
+	rm -f $(TARGETS)
 
 cleantest:
-	-@rm $(TESTS)
+	rm -f $(TESTS)
 
 clest:
-	-@rm $(TESTS)
+	rm -f $(TESTS)
 
 clexe:
-	-@rm $(TARGETS)
+	rm -f $(TARGETS)

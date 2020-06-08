@@ -13,6 +13,7 @@
 #include "Trie.hpp"
 
 namespace adage {
+namespace grids {
 /**
  * The LinearProgram class is a wrapper interface for linear programs using the structures of ADAGE.
  *
@@ -89,6 +90,7 @@ public:
 	virtual void readValues(char* filename);
 };
 
+}
 }
 
 #endif /* ADAGELINEARPROGRAM_HPP_ */

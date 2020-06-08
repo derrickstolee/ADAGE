@@ -118,7 +118,7 @@ SearchManager::SearchManager()
  */
 SearchManager::SearchManager(SearchManager& sm)
 {
-	unsigned int i;
+	int i;
 	this->root = new SearchNode(0);
 	this->jobDepth = sm.jobDepth;
 	this->partialDepth = sm.partialDepth;
@@ -511,7 +511,7 @@ int SearchManager::doSearch()
 		/* check the partial depth and find the stage, if necessary */
 		if ( this->numStages > 0 )
 		{
-			unsigned int i;
+			int i;
 			for ( i = 0; i < this->numStages; i++ )
 			{
 				if ( this->stages[i] > this->partialDepth )
@@ -1006,4 +1006,18 @@ char* SearchManager::writeBaseStats()
 	cur_loc += strlen(&(buffer[cur_loc]));
 
 	return buffer;
+}
+
+void SearchManager::loadEmptyJob()
+{
+	this->jobDepth = 0;
+	this->partialDepth = 0;
+	this->searchDepth = -3;
+	this->foundSolutions = 0;
+	this->numJobsFound = 0;
+
+	this->deepeningMode = 0;
+	this->labelSize = this->maxDepth;
+	this->jobLabels = (LONG_T*) malloc(this->labelSize * sizeof(LONG_T));
+	bzero(this->jobLabels, this->labelSize * sizeof(LONG_T));
 }
